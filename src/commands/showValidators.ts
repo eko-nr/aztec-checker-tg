@@ -34,20 +34,20 @@ export default async function showValidators(ctx: Context) {
             parse_mode: "Markdown"
           })
         }else {
-          // const dataQueue = await fetchQueue(validator.address);
+          const dataQueue = await fetchQueue(validator.address);
 
-          // if(!dataQueue){
-          //   await ctx.reply(
-          //   `❌ Could'nt get data validator \`${validator.address}\``,
-          //     { parse_mode: "Markdown" }
-          //   );
-          // }else{
-          //   const message = formatQueue(dataQueue);
-          //   await ctx.reply(
-          //     message,
-          //     { parse_mode: "Markdown" }
-          //   );
-          // }
+          if(!dataQueue){
+            await ctx.reply(
+            `❌ Could'nt get data validator \`${validator.address}\``,
+              { parse_mode: "Markdown" }
+            );
+          }else{
+            const message = formatQueue(dataQueue);
+            await ctx.reply(
+              message,
+              { parse_mode: "Markdown" }
+            );
+          }
 
         }
       } catch (error) {

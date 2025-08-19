@@ -49,23 +49,23 @@ export function startValidatorChecker(bot: Bot) {
             }
             
           } else {
-            const dataQueue = await fetchQueue(validator.address);
+            // const dataQueue = await fetchQueue(validator.address);
             
-            if(!dataQueue){
-              await bot.api.sendMessage(
-                validator.chatId,
-                `❌ Could'nt get data validator \`${validator.address}\``,
-                { parse_mode: "Markdown" }
-              );
-            }else{
-              const message = formatQueue(dataQueue);
+            // if(!dataQueue){
+            //   await bot.api.sendMessage(
+            //     validator.chatId,
+            //     `❌ Could'nt get data validator \`${validator.address}\``,
+            //     { parse_mode: "Markdown" }
+            //   );
+            // }else{
+            //   const message = formatQueue(dataQueue);
 
-              await bot.api.sendMessage(
-                validator.chatId,
-                message,
-                { parse_mode: "Markdown" }
-              );
-            }
+            //   await bot.api.sendMessage(
+            //     validator.chatId,
+            //     message,
+            //     { parse_mode: "Markdown" }
+            //   );
+            // }
           }
 
           // Add delay between API calls to avoid rate limiting
