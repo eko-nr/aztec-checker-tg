@@ -27,4 +27,4 @@ startValidatorChecker(bot);
 
 // Start bot
 bot.start();
-console.log("🤖 Bot is running with hourly cronjob...");
+console.log("🤖 Bot is running with cronjob...");
