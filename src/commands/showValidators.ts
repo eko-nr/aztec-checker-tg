@@ -33,7 +33,7 @@ export default async function showValidators(ctx: Context) {
           })
         }else {
           await ctx.reply(
-          `❌ Could'nt get data validator ${validator.address}`,
+          `❌ Could'nt get data validator \`${validator.address}\``,
             { parse_mode: "Markdown" }
           );
         }

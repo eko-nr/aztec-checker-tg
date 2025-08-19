@@ -47,7 +47,9 @@ export function startValidatorChecker(bot: Bot) {
             }
             
           } else {
-            console.error(`❌ Failed to fetch data for validator: ${validator.address}`);
+            await bot.api.sendMessage(validator.chatId, `❌ Failed to fetch data for validator: \`${validator.address}\``, {
+              parse_mode: "Markdown"
+            });
           }
 
           // Add delay between API calls to avoid rate limiting
