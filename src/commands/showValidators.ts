@@ -2,6 +2,8 @@ import { Context } from "grammy";
 import { ValidatorDatabase } from "../db/validatorDB";
 import { formatValidatorMessage } from "../utils/formatValidator";
 import { fetchValidatorData } from "../utils/fetchValidator";
+import { fetchQueue } from "../utils/fetchQueue";
+import { formatQueue } from "../utils/formatQueue";
  const database = new ValidatorDatabase();
 
 export default async function showValidators(ctx: Context) {
@@ -32,10 +34,21 @@ export default async function showValidators(ctx: Context) {
             parse_mode: "Markdown"
           })
         }else {
-          await ctx.reply(
-          `❌ Could'nt get data validator \`${validator.address}\``,
-            { parse_mode: "Markdown" }
-          );
+          const dataQueue = await fetchQueue(validator.address);
+
+          if(!dataQueue){
+            await ctx.reply(
+            `❌ Could'nt get data validator \`${validator.address}\``,
+              { parse_mode: "Markdown" }
+            );
+          }else{
+            const message = formatQueue(dataQueue);
+            await ctx.reply(
+              message,
+              { parse_mode: "Markdown" }
+            );
+          }
+
         }
       } catch (error) {
         await ctx.reply(

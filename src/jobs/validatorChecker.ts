@@ -3,6 +3,8 @@ import cron from "node-cron";
 import { ValidatorDatabase } from "../db/validatorDB";
 import { formatValidatorMessage } from "../utils/formatValidator";
 import { fetchValidatorData } from "../utils/fetchValidator";
+import { fetchQueue } from "../utils/fetchQueue";
+import { formatQueue } from "../utils/formatQueue";
 
 export function startValidatorChecker(bot: Bot) {
   const database = new ValidatorDatabase();
@@ -47,9 +49,23 @@ export function startValidatorChecker(bot: Bot) {
             }
             
           } else {
-            await bot.api.sendMessage(validator.chatId, `❌ Failed to fetch data for validator: \`${validator.address}\``, {
-              parse_mode: "Markdown"
-            });
+            const dataQueue = await fetchQueue(validator.address);
+            
+            if(!dataQueue){
+              await bot.api.sendMessage(
+                validator.chatId,
+                `❌ Could'nt get data validator \`${validator.address}\``,
+                { parse_mode: "Markdown" }
+              );
+            }else{
+              const message = formatQueue(dataQueue);
+
+              await bot.api.sendMessage(
+                validator.chatId,
+                message,
+                { parse_mode: "Markdown" }
+              );
+            }
           }
 
           // Add delay between API calls to avoid rate limiting
