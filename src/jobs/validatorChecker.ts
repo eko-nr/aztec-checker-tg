@@ -7,7 +7,7 @@ import { fetchValidatorData } from "../utils/fetchValidator";
 export function startValidatorChecker(bot: Bot) {
   const database = new ValidatorDatabase();
 
-  cron.schedule("*30 * * * *", async () => {
+  cron.schedule("*/30 * * * *", async () => {
     console.log("⏰ Running validator status checker at", new Date().toISOString());
     
     try {
@@ -87,5 +87,7 @@ export function startValidatorChecker(bot: Bot) {
   });
 
   console.log("🚀 Validator status checker initialized");
-  console.log(`📅 Next run: ${new Date(Math.ceil(Date.now() / 3600000) * 3600000).toLocaleString()}`);
+  const THIRTY_MINUTES = 30 * 60 * 1000; // 30 minutes in milliseconds
+  const nextRunTime = new Date(Math.ceil(Date.now() / THIRTY_MINUTES) * THIRTY_MINUTES);
+  console.log(`📅 Next run: ${nextRunTime.toLocaleString()}`);
 }
