@@ -31,6 +31,11 @@ export default async function showValidators(ctx: Context) {
           await ctx.reply(message, {
             parse_mode: "Markdown"
           })
+        }else {
+          await ctx.reply(
+          `❌ Could'nt get data validator ${validator.address}`,
+            { parse_mode: "Markdown" }
+          );
         }
       } catch (error) {
         await ctx.reply(
