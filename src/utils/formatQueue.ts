@@ -16,10 +16,6 @@ export function formatQueue(data: ValidatorsResponse): string {
   const { validatorsInQueue, filteredCount, pagination, benchmark } = data;
   
   let message = `📊 *Validators in Queue Report*\n\n`;
-  message += `📈 *Total Filtered:* ${filteredCount}\n`;
-  message += `⏱️ *Benchmark:* ${benchmark}\n\n`;
-  message += `📄 *Page ${pagination.page} of ${pagination.totalPages}*\n`;
-  message += `📋 *Showing ${validatorsInQueue.length} of ${pagination.total}*\n\n`;
 
   message += `🔍 *Validators in Queue:*\n`;
 
