@@ -36,13 +36,13 @@ export default async function showValidators(ctx: Context) {
         }else {
           const dataQueue = await fetchQueue(validator.address);
 
-          if(!dataQueue){
+          if(dataQueue!.validatorsInQueue.length <= 0){
             await ctx.reply(
             `❌ Could'nt get data validator \`${validator.address}\``,
               { parse_mode: "Markdown" }
             );
           }else{
-            const message = formatQueue(dataQueue);
+            const message = formatQueue(dataQueue!);
             await ctx.reply(
               message,
               { parse_mode: "Markdown" }
