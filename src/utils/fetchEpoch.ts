@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { ValidatorData } from "../db/validatorDB";
 
 type EpochMetrics = {
   epochNumber: number;
@@ -20,13 +20,15 @@ export type ValidatorStats = {
 
 export async function fetchEpoch(): Promise<ValidatorStats | null> {
   try {
-    const response = await axios.get<ValidatorStats>(
-      'https://dashtec.xyz/api/dashboard/current-epoch-stats'
-    );
+    const response = await fetch(`https://dashtec.xyz/api/dashboard/current-epoch-stats`);
     
-    return response.data;
+    if (!response.ok) {
+      return null;
+    }
+
+    const data: ValidatorStats = await response.json();
+    return data;
   } catch (error) {
-    console.error('Error fetching epoch data:', error);
     return null;
   }
 }

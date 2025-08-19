@@ -1,13 +1,16 @@
-import axios from 'axios';
 import { ValidatorData } from "../db/validatorDB";
 
 export async function fetchValidatorData(address: string): Promise<ValidatorData | null> {
   try {
-    const response = await axios.get<ValidatorData>(
-      `${process.env.API_ENDPOINT_CHECKER}/${address}`
-    );
+    const response = await fetch(`${process.env.API_ENDPOINT_CHECKER}/${address}`);
     
-    return response.data;
+    if (!response.ok) {
+      console.error(`API request failed with status: ${response.status} for address: ${address}`);
+      return null;
+    }
+
+    const data: ValidatorData = await response.json();
+    return data;
   } catch (error) {
     console.error(`Error fetching validator data for ${address}:`, error);
     return null;
