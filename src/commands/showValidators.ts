@@ -34,11 +34,15 @@ export default async function showValidators(ctx: Context) {
   }
 
   // Send cached data immediately (no API calls needed)
+  let countValidator = 0
   for (const { cachedData, timestamp } of validatorsWithCache) {
-    const message = formatValidatorMessage(cachedData, timestamp);
+    const message = formatValidatorMessage(cachedData, timestamp, countValidator);
+
     await ctx.reply(message, {
       parse_mode: "Markdown"
     });
+
+    countValidator++;
   }
 
   // Handle validators that need API calls concurrently
@@ -68,6 +72,7 @@ export default async function showValidators(ctx: Context) {
     // Execute all API calls concurrently
     const fetchResults = await Promise.all(fetchPromises);
 
+    let countQueue = 0;
     // Process results and handle fallbacks
     for (const result of fetchResults) {
       const { validator, data, success, error } = result;
@@ -88,7 +93,7 @@ export default async function showValidators(ctx: Context) {
             const dataQueue = await fetchQueue(validator.address);
             
             if (dataQueue && dataQueue.validatorsInQueue.length > 0) {
-              const message = formatQueue(dataQueue);
+              const message = formatQueue(dataQueue, countQueue);
               await ctx.reply(message, {
                 parse_mode: "Markdown"
               });
@@ -99,6 +104,7 @@ export default async function showValidators(ctx: Context) {
               );
             }
             
+            countQueue++;
           } catch (queueError) {
             await ctx.reply(
               `❌ Could'nt get data validator \`${validator.address}\``,

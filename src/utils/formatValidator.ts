@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 
 const zone = "Asia/Bangkok"
 
-export function formatValidatorMessage(data: ValidatorData, timestamp: string): string {
+export function formatValidatorMessage(data: ValidatorData, timestamp: string, index?: number): string {
   const balanceInSTK = (parseFloat(data.balance) / 1e18).toFixed(4);
   const unclaimedRewardsInSTK = (parseFloat(data.unclaimedRewards) / 1e18).toFixed(6);
   const gmt7Time = moment(timestamp).tz(zone);
@@ -17,7 +17,7 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string): 
     .map(att => `Slot ${att.slot}: ${att.status === "Success" ? "✅" : "❌"}`)
     .join("\n");
 
-  return `🔍 **Validator Status Update**
+  return `🔍 **Validator Status Update** ${index ? index+1 : ""}
 
 📍 **Index:** ${data.index}
 📝 **Address:** \`${data.address}\`
