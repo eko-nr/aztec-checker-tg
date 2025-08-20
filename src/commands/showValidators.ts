@@ -144,7 +144,7 @@ export default async function showValidators(ctx: Context) {
 
     try {
       const messageSummary = formatTotalValidatorMessage({
-        activeValidators: validators.length - countInactive,
+        activeValidators: validators.length - countInactive - countQueue,
         inactiveValidators: countInactive,
         queueValidators: countQueue,
         totalValidators: validators.length

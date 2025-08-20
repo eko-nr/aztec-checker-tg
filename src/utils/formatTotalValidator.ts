@@ -12,7 +12,7 @@ export const formatTotalValidatorMessage = (data: SummaryValidator) => {
 📈 **Overall Statistics:**
 • Active Validators: ${data.activeValidators}
 • Queue Validators: ${data.queueValidators}
-• Inactive Validators: ${data.inactiveValidators}
+• Exiting Validators: ${data.inactiveValidators}
 • Total Validators: ${data.totalValidators}
     `
 }
