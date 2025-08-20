@@ -141,7 +141,7 @@ export default async function showValidators(ctx: Context) {
         );
       }
     }
-
+    
     try {
       const messageSummary = formatTotalValidatorMessage({
         activeValidators: validators.length - countInactive - countQueue,
