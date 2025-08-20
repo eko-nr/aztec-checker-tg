@@ -15,7 +15,7 @@ function formatDate(dateString: string): string {
 export function formatQueue(data: ValidatorsResponse, index?: number): string {
   const { validatorsInQueue, filteredCount, pagination, benchmark } = data;
   
-  let message = `📊 *Validators in Queue Report* ${index? index+1 : ""} \n\n`;
+  let message = `📊 *Validators in Queue Report* ${index? `(${index+1})` : ""} \n\n`;
 
   message += `🔍 *Validators in Queue:*\n`;
 
