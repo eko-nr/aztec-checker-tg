@@ -17,7 +17,7 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
     .map(att => `Slot ${att.slot}: ${att.status === "Success" ? "✅" : "❌"}`)
     .join("\n");
 
-  return `🔍 **Validator Status Update** (${index+1})}
+  return `🔍 **Validator Status Update** (${index+1})
 
 📍 **Index:** ${data.index}
 📝 **Address:** \`${data.address}\`

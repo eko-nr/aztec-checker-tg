@@ -4,6 +4,7 @@ import { formatValidatorMessage } from "../utils/formatValidator";
 import { fetchValidatorData } from "../utils/fetchValidator";
 import { fetchQueue } from "../utils/fetchQueue";
 import { formatQueue } from "../utils/formatQueue";
+import { formatTotalValidatorMessage } from "../utils/formatTotalValidator";
 
 const database = new ValidatorDatabase();
 
@@ -35,6 +36,9 @@ export default async function showValidators(ctx: Context) {
 
   // Send cached data immediately (no API calls needed)
   let countValidator = 0
+  let countQueue = 0;
+  let countInactive = 0;
+  
   for (const { cachedData, timestamp } of validatorsWithCache) {
     const message = formatValidatorMessage(cachedData, timestamp, countValidator);
 
@@ -42,6 +46,9 @@ export default async function showValidators(ctx: Context) {
       parse_mode: "Markdown"
     });
 
+    if(cachedData.status !== "Validating"){
+      countInactive++;
+    }
     countValidator++;
   }
 
@@ -72,7 +79,6 @@ export default async function showValidators(ctx: Context) {
     // Execute all API calls concurrently
     const fetchResults = await Promise.all(fetchPromises);
 
-    let countQueue = 0;
     // Process results and handle fallbacks
     for (const result of fetchResults) {
       const { validator, data, success, error } = result;
@@ -80,12 +86,18 @@ export default async function showValidators(ctx: Context) {
       try {
         if (success && data) {
           // Successfully got validator data
-          const message = formatValidatorMessage(data, new Date().toISOString());
+          const message = formatValidatorMessage(data, new Date().toISOString(), countValidator);
           await database.addLog(validator.address, ctx.chatId!, data);
           
           await ctx.reply(message, {
             parse_mode: "Markdown"
           });
+
+          if(data.status !== "Validating"){
+            countInactive++;
+          }
+
+          countValidator++;
 
         } else {
           // Primary fetch failed, try queue fallback
@@ -97,25 +109,41 @@ export default async function showValidators(ctx: Context) {
               await ctx.reply(message, {
                 parse_mode: "Markdown"
               });
+
+              countQueue++;
             } else {
               await ctx.reply(
                 `❌ Could'nt get data validator \`${validator.address}\``,
                 { parse_mode: "Markdown" }
               );
+
+              countInactive++;
             }
             
-            countQueue++;
           } catch (queueError) {
             await ctx.reply(
               `❌ Could'nt get data validator \`${validator.address}\``,
               { parse_mode: "Markdown" }
             );
+
+            countInactive++;
           }
         }
 
         // Small delay between messages to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
+        const messageSummary = formatTotalValidatorMessage({
+          activeValidators: validators.length - countInactive,
+          inactiveValidators: countInactive,
+          queueValidators: countQueue,
+          totalValidators: validators.length
+        });
+
+        await ctx.reply(
+          messageSummary,
+          { parse_mode: "Markdown" }
+        );
       } catch (processingError) {
         await ctx.reply(
           `❌ **API Error**\n\n` +
