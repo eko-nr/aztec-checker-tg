@@ -133,17 +133,6 @@ export default async function showValidators(ctx: Context) {
         // Small delay between messages to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 100));
 
-        const messageSummary = formatTotalValidatorMessage({
-          activeValidators: validators.length - countInactive,
-          inactiveValidators: countInactive,
-          queueValidators: countQueue,
-          totalValidators: validators.length
-        });
-
-        await ctx.reply(
-          messageSummary,
-          { parse_mode: "Markdown" }
-        );
       } catch (processingError) {
         await ctx.reply(
           `❌ **API Error**\n\n` +
@@ -151,6 +140,22 @@ export default async function showValidators(ctx: Context) {
           { parse_mode: "Markdown" }
         );
       }
+    }
+
+    try {
+      const messageSummary = formatTotalValidatorMessage({
+        activeValidators: validators.length - countInactive,
+        inactiveValidators: countInactive,
+        queueValidators: countQueue,
+        totalValidators: validators.length
+      });
+
+      await ctx.reply(
+        messageSummary,
+        { parse_mode: "Markdown" }
+      );
+    } catch (error) {
+      
     }
   }
 }
