@@ -5,7 +5,7 @@ export async function fetchValidatorData(address: string): Promise<ValidatorData
     const response = await fetch(`${process.env.API_ENDPOINT_CHECKER}/${address}`);
     
     if (!response.ok) {
-      console.error(`API request failed with status: ${response.status} for address: ${address}`);
+      console.error(`Fetch validator request failed with status: ${response.status} for address: ${address}`);
       return null;
     }
 
