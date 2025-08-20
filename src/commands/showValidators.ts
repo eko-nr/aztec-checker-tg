@@ -4,61 +4,119 @@ import { formatValidatorMessage } from "../utils/formatValidator";
 import { fetchValidatorData } from "../utils/fetchValidator";
 import { fetchQueue } from "../utils/fetchQueue";
 import { formatQueue } from "../utils/formatQueue";
- const database = new ValidatorDatabase();
+
+const database = new ValidatorDatabase();
 
 export default async function showValidators(ctx: Context) {
   const validators = await database.getChatValidators(ctx.chatId!);
-
-  if(validators.length <= 0){
-    ctx.reply("⚠️ You don't have any validator")
+  
+  if (validators.length <= 0) {
+    ctx.reply("⚠️ You don't have any validator");
+    return;
   }
+
+  // Separate validators that need API calls from those with cached data
+  const validatorsWithCache = [];
+  const validatorsNeedingFetch = [];
 
   for (const validator of validators) {
     const latestLogs = await database.getLatestLog(validator.address);
+    
+    if (latestLogs?.data) {
+      validatorsWithCache.push({
+        validator,
+        cachedData: latestLogs.data,
+        timestamp: latestLogs.timestamp
+      });
+    } else {
+      validatorsNeedingFetch.push(validator);
+    }
+  }
 
-    if(latestLogs?.data){
-      const message = formatValidatorMessage(latestLogs?.data, latestLogs.timestamp);
-  
-      await ctx.reply(message, {
-        parse_mode: "Markdown"
-      })
-    }else{
+  // Send cached data immediately (no API calls needed)
+  for (const { cachedData, timestamp } of validatorsWithCache) {
+    const message = formatValidatorMessage(cachedData, timestamp);
+    await ctx.reply(message, {
+      parse_mode: "Markdown"
+    });
+  }
+
+  // Handle validators that need API calls concurrently
+  if (validatorsNeedingFetch.length > 0) {
+    // Create promises for concurrent API calls
+    const fetchPromises = validatorsNeedingFetch.map(async (validator) => {
       try {
         const data = await fetchValidatorData(validator.address);
+        
+        return {
+          validator,
+          data,
+          success: true,
+          error: null
+        };
+        
+      } catch (error) {
+        return {
+          validator,
+          data: null,
+          success: false,
+          error
+        };
+      }
+    });
 
-        if (data) {
+    // Execute all API calls concurrently
+    const fetchResults = await Promise.all(fetchPromises);
+
+    // Process results and handle fallbacks
+    for (const result of fetchResults) {
+      const { validator, data, success, error } = result;
+
+      try {
+        if (success && data) {
+          // Successfully got validator data
           const message = formatValidatorMessage(data, new Date().toISOString());
           await database.addLog(validator.address, ctx.chatId!, data);
-            
+          
           await ctx.reply(message, {
             parse_mode: "Markdown"
-          })
-        }else {
-          const dataQueue = await fetchQueue(validator.address);
+          });
 
-          if(dataQueue!.validatorsInQueue.length <= 0){
+        } else {
+          // Primary fetch failed, try queue fallback
+          try {
+            const dataQueue = await fetchQueue(validator.address);
+            
+            if (dataQueue && dataQueue.validatorsInQueue.length > 0) {
+              const message = formatQueue(dataQueue);
+              await ctx.reply(message, {
+                parse_mode: "Markdown"
+              });
+            } else {
+              await ctx.reply(
+                `❌ Could'nt get data validator \`${validator.address}\``,
+                { parse_mode: "Markdown" }
+              );
+            }
+            
+          } catch (queueError) {
             await ctx.reply(
-            `❌ Could'nt get data validator \`${validator.address}\``,
-              { parse_mode: "Markdown" }
-            );
-          }else{
-            const message = formatQueue(dataQueue!);
-            await ctx.reply(
-              message,
+              `❌ Could'nt get data validator \`${validator.address}\``,
               { parse_mode: "Markdown" }
             );
           }
-
         }
-      } catch (error) {
+
+        // Small delay between messages to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+      } catch (processingError) {
         await ctx.reply(
           `❌ **API Error**\n\n` +
-          `${typeof error === "string" ? error : JSON.stringify(error)}`,
+          `${typeof processingError === "string" ? processingError : JSON.stringify(processingError)}`,
           { parse_mode: "Markdown" }
         );
       }
-          
     }
   }
-  
 }

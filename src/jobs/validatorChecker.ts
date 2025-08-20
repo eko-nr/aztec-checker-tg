@@ -22,13 +22,41 @@ export function startValidatorChecker(bot: Bot) {
 
       console.log(`🔍 Checking status for ${validators.length} validators...`);
 
-      for (const validator of validators) {
+      // Create array of promises for concurrent API calls
+      const validatorPromises = validators.map(async (validator) => {
         try {
           console.log(`📡 Fetching data for validator: ${validator.address}`);
           
           const data = await fetchValidatorData(validator.address);
           
-          if (data) {
+          return {
+            validator,
+            data,
+            success: true,
+            error: null
+          };
+          
+        } catch (error) {
+          console.error(`💥 Error fetching data for validator ${validator.address}:`, error);
+          
+          return {
+            validator,
+            data: null,
+            success: false,
+            error
+          };
+        }
+      });
+
+      // Execute all API calls concurrently
+      const results = await Promise.all(validatorPromises);
+
+      // Process results sequentially for database operations and messaging
+      for (const result of results) {
+        const { validator, data, success, error } = result;
+
+        try {
+          if (success && data) {
             // Get the latest log to compare data
             const latestLog = await database.getLatestLog(validator.address);
             const hasChanged = database.hasDataChanged(latestLog?.data || null, data);
@@ -43,36 +71,24 @@ export function startValidatorChecker(bot: Bot) {
               await bot.api.sendMessage(validator.chatId, message, {
                 parse_mode: "Markdown"
               });
-
-            } else {
-
             }
             
-          } else {
-            // const dataQueue = await fetchQueue(validator.address);
-            
-            // if(!dataQueue){
-            //   await bot.api.sendMessage(
-            //     validator.chatId,
-            //     `❌ Could'nt get data validator \`${validator.address}\``,
-            //     { parse_mode: "Markdown" }
-            //   );
-            // }else{
-            //   const message = formatQueue(dataQueue);
-
-            //   await bot.api.sendMessage(
-            //     validator.chatId,
-            //     message,
-            //     { parse_mode: "Markdown" }
-            //   );
-            // }
+          } else if (!success) {
+            // Send error notification
+            await bot.api.sendMessage(
+              validator.chatId,
+              `⚠️ **Processing Error**\n\n` +
+              `Error occurred while processing validator \`${validator.address}\`.\n` +
+              `Will retry in the next cycle.`,
+              { parse_mode: "Markdown" }
+            );
           }
 
-          // Add delay between API calls to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // Optional: Add small delay between message sends to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 100));
           
-        } catch (error) {
-          console.error(`💥 Error processing validator ${validator.address}:`, error);
+        } catch (processingError) {
+          console.error(`💥 Error processing result for validator ${validator.address}:`, processingError);
           
           try {
             await bot.api.sendMessage(
@@ -88,7 +104,7 @@ export function startValidatorChecker(bot: Bot) {
         }
       }
 
-      // console.log(`✅ Validator status check completed at ${new Date().toISOString()}`);
+      console.log(`✅ Validator status check completed at ${new Date().toISOString()}`);
       
     } catch (error) {
       console.error("💥 Critical error in validator checker cron job:", error);
