@@ -7,6 +7,7 @@ import messageHandler from "./handlers/messageHandler";
 import { startValidatorChecker } from "./jobs/validatorChecker";
 import epochCommand from "./commands/epoch";
 import removeValidatorCommand from "./commands/removeValidators";
+import getEpochValidatorCommand from "./commands/getEpochValidator";
 
 const token = process.env.BOT_TOKEN;
 if (!token) throw new Error("BOT_TOKEN not found in environment variables");
@@ -20,6 +21,7 @@ bot.command("add_validator", addValidatorCommand);
 bot.command("remove_validator", removeValidatorCommand);
 bot.command("show_validators", showValidatorsCommand);
 bot.command("epoch", epochCommand);
+bot.command("get_epoch_validator", getEpochValidatorCommand);
 
 // Message handler
 bot.on("message:text", messageHandler);
