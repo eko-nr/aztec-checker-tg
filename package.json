@@ -3,7 +3,8 @@
   "module": "index.ts",
   "scripts": {
     "start": "bun run src/index.ts",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "clean-logs": "bun run src/scripts/cleanLogs.ts"
   },
   "type": "module",
   "devDependencies": {

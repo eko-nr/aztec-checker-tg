@@ -211,4 +211,48 @@ export class ValidatorDatabase {
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, limit);
   }
+
+  /**
+   * Clear all logs while keeping validator addresses and chat IDs
+   * @param chatId Optional - if provided, only clears logs for specific chat
+   * @param address Optional - if provided, only clears logs for specific validator address
+   * @returns Number of logs cleared
+   */
+  async clearLogs(chatId?: number, address?: string): Promise<number> {
+    const db = await this.loadDatabase();
+    const initialLogCount = db.logs.length;
+
+    if (chatId !== undefined && address !== undefined) {
+      // Clear logs for specific validator in specific chat
+      db.logs = db.logs.filter(log => !(log.chatId === chatId && log.address === address));
+    } else if (chatId !== undefined) {
+      // Clear logs for specific chat
+      db.logs = db.logs.filter(log => log.chatId !== chatId);
+    } else if (address !== undefined) {
+      // Clear logs for specific validator address across all chats
+      db.logs = db.logs.filter(log => log.address !== address);
+    } else {
+      // Clear all logs
+      db.logs = [];
+    }
+
+    await this.saveDatabase(db);
+    return initialLogCount - db.logs.length;
+  }
+
+  /**
+   * Purge ALL logs from the database while keeping validator addresses and chat IDs
+   * This is a complete log wipe for all users and validators
+   * @returns Number of logs purged
+   */
+  async purgeAllLogs(): Promise<number> {
+    const db = await this.loadDatabase();
+    const totalLogsCleared = db.logs.length;
+
+    // Clear all logs but keep validators array intact
+    db.logs = [];
+
+    await this.saveDatabase(db);
+    return totalLogsCleared;
+  }
 }
