@@ -3,8 +3,9 @@ import cron from "node-cron";
 import { ValidatorDatabase } from "../db/validatorDB";
 import { formatValidatorMessage } from "../utils/formatValidator";
 import { fetchValidatorData } from "../utils/fetchValidator";
-import { fetchQueue } from "../utils/fetchQueue";
-import { formatQueue } from "../utils/formatQueue";
+import { fetchEpoch } from "../utils/fetchEpoch";
+import { fethEpochValidator } from "../utils/fetchEpochValidator";
+import { formatEpochValidator } from "../utils/formatEpoch";
 
 export function startValidatorChecker(bot: Bot) {
   const database = new ValidatorDatabase();
@@ -66,13 +67,13 @@ export function startValidatorChecker(bot: Bot) {
             await database.addLog(validator.address, validator.chatId, data);
             
             // Only send message if data has changed
-            if (hasChanged) {
-              const message = formatValidatorMessage(data, new Date().toISOString(), i);
+            // if (hasChanged) {
+            //   const message = formatValidatorMessage(data, new Date().toISOString(), i);
               
-              await bot.api.sendMessage(validator.chatId, message, {
-                parse_mode: "Markdown"
-              });
-            }
+            //   await bot.api.sendMessage(validator.chatId, message, {
+            //     parse_mode: "Markdown"
+            //   });
+            // }
             
           } else if (!success) {
             // Send error notification
@@ -112,10 +113,27 @@ export function startValidatorChecker(bot: Bot) {
     } catch (error) {
       console.error("💥 Critical error in validator checker cron job:", error);
     }
+
+    console.log("🚀 Validator status checker initialized");
+    const THIRTY_MINUTES = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const nextRunTime = new Date(Math.ceil(Date.now() / THIRTY_MINUTES) * THIRTY_MINUTES);
+    console.log(`📅 Next run: ${nextRunTime.toLocaleString()}`);
   });
 
-  console.log("🚀 Validator status checker initialized");
-  const THIRTY_MINUTES = 30 * 60 * 1000; // 30 minutes in milliseconds
-  const nextRunTime = new Date(Math.ceil(Date.now() / THIRTY_MINUTES) * THIRTY_MINUTES);
-  console.log(`📅 Next run: ${nextRunTime.toLocaleString()}`);
+  cron.schedule("*/5 * * * *", async () => {
+    const validators = await database.getValidators();
+    const currentEpoch = await fetchEpoch();
+
+    if(currentEpoch){
+      const epochValidator = await fethEpochValidator(currentEpoch.currentEpochMetrics.epochNumber);
+      if(epochValidator){
+        for (const validator of validators) {
+          const message = formatEpochValidator(epochValidator, validator.address);
+          if(message){
+             await bot.api.sendMessage(validator.chatId, message, {parse_mode: "Markdown"});
+          }
+        }
+      }
+    }
+  });
 }
