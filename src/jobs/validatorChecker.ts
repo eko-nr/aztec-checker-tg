@@ -115,9 +115,6 @@ export function startValidatorChecker(bot: Bot) {
     }
 
     console.log("🚀 Validator status checker initialized");
-    const THIRTY_MINUTES = 30 * 60 * 1000; // 30 minutes in milliseconds
-    const nextRunTime = new Date(Math.ceil(Date.now() / THIRTY_MINUTES) * THIRTY_MINUTES);
-    console.log(`📅 Next run: ${nextRunTime.toLocaleString()}`);
   });
 
   cron.schedule("*/5 * * * *", async () => {
