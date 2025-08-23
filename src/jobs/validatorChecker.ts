@@ -10,7 +10,7 @@ import { formatEpochValidator } from "../utils/formatEpoch";
 export function startValidatorChecker(bot: Bot) {
   const database = new ValidatorDatabase();
 
-  cron.schedule("*/30 * * * *", async () => {
+  cron.schedule("*/10 * * * *", async () => {
     console.log("⏰ Running validator status checker at", new Date().toISOString());
     
     try {
@@ -67,13 +67,13 @@ export function startValidatorChecker(bot: Bot) {
             await database.addLog(validator.address, validator.chatId, data);
             
             // Only send message if data has changed
-            // if (hasChanged) {
-            //   const message = formatValidatorMessage(data, new Date().toISOString(), i);
+            if (hasChanged) {
+              const message = formatValidatorMessage(data, new Date().toISOString(), i);
               
-            //   await bot.api.sendMessage(validator.chatId, message, {
-            //     parse_mode: "Markdown"
-            //   });
-            // }
+              await bot.api.sendMessage(validator.chatId, message, {
+                parse_mode: "Markdown"
+              });
+            }
             
           } else if (!success) {
             // Send error notification
