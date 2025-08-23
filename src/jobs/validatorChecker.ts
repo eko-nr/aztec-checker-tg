@@ -53,7 +53,6 @@ export function startValidatorChecker(bot: Bot) {
       const results = await Promise.all(validatorPromises);
 
       // Process results sequentially for database operations and messaging
-      let i = 0
       for (const result of results) {
         const { validator, data, success, error } = result;
 
@@ -68,7 +67,7 @@ export function startValidatorChecker(bot: Bot) {
             
             // Only send message if data has changed
             if (hasChanged) {
-              const message = formatValidatorMessage(data, new Date().toISOString(), i);
+              const message = formatValidatorMessage(data, new Date().toISOString(), 0);
               
               await bot.api.sendMessage(validator.chatId, message, {
                 parse_mode: "Markdown"
@@ -104,8 +103,6 @@ export function startValidatorChecker(bot: Bot) {
             console.error(`Failed to send error notification to chat ${validator.chatId}:`, sendError);
           }
         }
-
-        i++;
       }
 
       console.log(`✅ Validator status check completed at ${new Date().toISOString()}`);
