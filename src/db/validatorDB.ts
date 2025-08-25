@@ -3,6 +3,7 @@ import path from "path";
 
 export interface ValidatorData {
   index: string;
+  rank: number;
   address: string;
   status: string;
   balance: string;

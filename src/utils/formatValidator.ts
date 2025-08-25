@@ -20,6 +20,7 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
   return `🔍 **Validator Status Update** (${index+1})
 
 📍 **Index:** ${data.index}
+🏆 **Rank:** \`${data.rank}\`
 📝 **Address:** \`${data.address}\`
 ${statusEmoji} **Status:** ${statusDisplay}
 💰 **Balance:** ${balanceInSTK} STK

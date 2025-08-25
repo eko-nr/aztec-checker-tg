@@ -1,16 +1,47 @@
 import { ValidatorData } from "../db/validatorDB";
 
+type Validator = {
+  index: string;
+  address: string;
+  status: string;
+  balance: string;
+  attestationSuccess: string;
+  proposalSuccess: string;
+  lastProposed: string;
+  performanceScore: number;
+  totalAttestationsSucceeded: number;
+  totalAttestationsMissed: number;
+  totalBlocksProposed: number;
+  totalBlocksMined: number;
+  totalBlocksMissed: number;
+  totalParticipatingEpochs: number;
+  rank: number;
+};
+
+type ValidatorsResponse = {
+  validators: Validator[];
+};
+
+
 export async function fetchValidatorData(address: string): Promise<ValidatorData | null> {
   try {
-    const response = await fetch(`${process.env.API_ENDPOINT_CHECKER}/${address}`);
+    const responseValidators = await fetch(`https://dashtec.xyz/api/validators`);
+    const response = await fetch(`https://dashtec.xyz/api/validators/${address}`);
     
-    if (!response.ok) {
+    if (!response.ok || !responseValidators.ok) {
       console.error(`Fetch validator request failed with status: ${response.status} for address: ${address}`);
       return null;
     }
 
+    const dataValidators: ValidatorsResponse = await responseValidators.json();
+    const validator = dataValidators.validators.find((x) => x.address.toLowerCase() === address.toLowerCase())
+
     const data: ValidatorData = await response.json();
-    return data;
+
+    return {
+      ...data,
+      rank: validator?.rank || 0,
+    };
   } catch (error) {
     console.error(`Error fetching validator data for ${address}:`, error);
     return null;
