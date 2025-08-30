@@ -28,7 +28,7 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
 ${statusEmoji} **Status:** ${statusDisplay}
 💰 **Balance:** ${balanceInSTK} STK
 📊 **Attestation Rate:** ${data.attestationSuccess}
-🧊 **Block Proposal Rate:** ${totalBlock > 0 ? (blockProposalSuccess/totalBlock).toFixed(1) : 0}%
+🧊 **Block Proposal Rate:** ${totalBlock > 0 ? (blockProposalSuccess/totalBlock*100).toFixed(1) : 0}%
 🎁 **Unclaimed Rewards:** ${unclaimedRewardsInSTK} STK
 🕓 **Activation Date:** ${moment(data.activationDate).toLocaleString()}
 
