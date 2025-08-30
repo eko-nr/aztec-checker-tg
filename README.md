@@ -64,9 +64,14 @@ bun run dev
 bun run start
 ```
 
-### Clean Logs
+### Clean All Logs
 ```bash
 bun run clean-logs
+```
+
+### Clean Old Logs
+```bash
+bun run clean-old-logs
 ```
 
 ## Project Structure
