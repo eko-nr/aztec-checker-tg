@@ -13,7 +13,7 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
   const statusEmoji = data.status === "Validating" ? "🟢" : "⚠️";
   
   const recentAttestationStatus = data.recentAttestations
-    .slice(0, 3)
+    .slice(0, 5)
     .map(att => `Slot ${att.slot}: ${att.status === "Success" ? "✅" : "❌"}`)
     .join("\n");
 
@@ -30,7 +30,7 @@ ${statusEmoji} **Status:** ${statusDisplay}
 
 📈 **Performance:**
 • Total Attestations: ${data.totalAttestationsSucceeded} ✅ / ${data.totalAttestationsMissed} ❌
-• Blocks Mined: ${data.totalBlocksMined}
+• Blocks Mined: ${data.totalBlocksMined} ✅ / ${data.totalBlocksMissed} ❌
 • Participating Epochs: ${data.totalParticipatingEpochs}
 
 🕒 **Recent Attestations:**
