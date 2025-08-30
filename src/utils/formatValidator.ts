@@ -34,7 +34,7 @@ ${statusEmoji} **Status:** ${statusDisplay}
 
 📈 **Performance:**
 • Total Attestations: ${data.totalAttestationsSucceeded} ✅ / ${data.totalAttestationsMissed} ❌
-• Blocks Prosal and Mined: ${blockProposalSuccess} ✅ / ${blockProposalFailed} ❌
+• Blocks Prosal or Mined: ${blockProposalSuccess} ✅ / ${blockProposalFailed} ❌
 • Participating Epochs: ${data.totalParticipatingEpochs}
 
 🕒 **Recent Attestations:**
