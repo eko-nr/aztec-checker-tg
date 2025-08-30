@@ -11,7 +11,9 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
   // Determine status display
   const statusDisplay = data.status === "Validating" ? "Validator Active" : data.status;
   const statusEmoji = data.status === "Validating" ? "🟢" : "⚠️";
-  
+  const blockProposalSuccess = data.totalBlocksMined + data.totalBlocksProposed;
+  const blockProposalFailed = data.totalBlocksMissed;
+
   const recentAttestationStatus = data.recentAttestations
     .slice(0, 5)
     .map(att => `Slot ${att.slot}: ${att.status === "Success" ? "✅" : "❌"}`)
@@ -24,13 +26,14 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
 📝 **Address:** \`${data.address}\`
 ${statusEmoji} **Status:** ${statusDisplay}
 💰 **Balance:** ${balanceInSTK} STK
-📊 **Attestation Success:** ${data.attestationSuccess}
+📊 **Attestation Rate:** ${data.attestationSuccess}
+🧊 **Block Proposal Rate:** ${(blockProposalSuccess/(blockProposalSuccess+blockProposalFailed)).toFixed(1)}
 🎁 **Unclaimed Rewards:** ${unclaimedRewardsInSTK} STK
 🕓 **Activation Date:** ${moment(data.activationDate).toLocaleString()}
 
 📈 **Performance:**
 • Total Attestations: ${data.totalAttestationsSucceeded} ✅ / ${data.totalAttestationsMissed} ❌
-• Blocks Mined: ${data.totalBlocksMined} ✅ / ${data.totalBlocksMissed} ❌
+• Blocks Mined: ${blockProposalSuccess} ✅ / ${blockProposalFailed} ❌
 • Participating Epochs: ${data.totalParticipatingEpochs}
 
 🕒 **Recent Attestations:**
