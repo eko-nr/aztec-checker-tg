@@ -4,7 +4,8 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun run --watch src/index.ts",
-    "clean-logs": "bun run src/scripts/cleanLogs.ts"
+    "clean-logs": "bun run src/scripts/cleanLogs.ts",
+    "clean-old-logs": "bun run src/scripts/cleanOldLogs.ts"
   },
   "type": "module",
   "devDependencies": {

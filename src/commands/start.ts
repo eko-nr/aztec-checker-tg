@@ -8,7 +8,9 @@ I'll quietly watch your validators in the background and only pop up if somethin
 **Here’s how to use me:**
 ✨ Use /add_validator <your_address> to add a validator to your watchlist.
 📋 Use /show_validators to see your list.
+📈 Use /get_epoch_validators to get all validators stats for the current epoch.
 📊 Use /epoch to check the current epoch's stats.
 
-My data is refreshed every 30 minutes. Ready to start? Use /add_validator to add your first validator!`);
+My data is refreshed every 10 minutes. Ready to start? Use /add_validator to add your first validator!
+`);
 }

@@ -242,18 +242,81 @@ export class ValidatorDatabase {
   }
 
   /**
-   * Purge ALL logs from the database while keeping validator addresses and chat IDs
-   * This is a complete log wipe for all users and validators
-   * @returns Number of logs purged
+   * Clear logs but keep the most recent log for each validator
+   * @param chatId Optional - if provided, only affects logs for specific chat
+   * @param address Optional - if provided, only affects logs for specific validator address
+   * @returns Object with totalCleared count and array of kept logs info
    */
-  async purgeAllLogs(): Promise<number> {
+  async clearLogsKeepLatest(chatId?: number, address?: string): Promise<{
+    totalCleared: number;
+    keptLogs: Array<{ address: string; chatId: number; timestamp: string }>;
+  }> {
     const db = await this.loadDatabase();
-    const totalLogsCleared = db.logs.length;
+    const initialLogCount = db.logs.length;
+    const keptLogs: Array<{ address: string; chatId: number; timestamp: string }> = [];
 
-    // Clear all logs but keep validators array intact
-    db.logs = [];
+    // Filter logs based on parameters
+    let targetLogs = db.logs;
+    if (chatId !== undefined && address !== undefined) {
+      targetLogs = db.logs.filter(log => log.chatId === chatId && log.address === address);
+    } else if (chatId !== undefined) {
+      targetLogs = db.logs.filter(log => log.chatId === chatId);
+    } else if (address !== undefined) {
+      targetLogs = db.logs.filter(log => log.address === address);
+    }
+
+    // Group logs by validator address and chatId combination
+    const logGroups = new Map<string, ValidatorLog[]>();
+    for (const log of targetLogs) {
+      const key = `${log.address}_${log.chatId}`;
+      if (!logGroups.has(key)) {
+        logGroups.set(key, []);
+      }
+      logGroups.get(key)!.push(log);
+    }
+
+    // Find the latest log for each validator/chat combination
+    const logsToKeep: ValidatorLog[] = [];
+    for (const [key, logs] of logGroups) {
+      const sortedLogs = logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      const latestLog = sortedLogs[0];
+      logsToKeep.push(latestLog);
+      keptLogs.push({
+        address: latestLog.address,
+        chatId: latestLog.chatId,
+        timestamp: latestLog.timestamp
+      });
+    }
+
+    // Get checkIds of logs to keep
+    const keepCheckIds = new Set(logsToKeep.map(log => log.checkId));
+
+    // Remove logs that are not in the keep list, but only from the target set
+    if (chatId !== undefined && address !== undefined) {
+      // Remove logs for specific validator in specific chat, except the latest
+      db.logs = db.logs.filter(log => 
+        !(log.chatId === chatId && log.address === address) || keepCheckIds.has(log.checkId)
+      );
+    } else if (chatId !== undefined) {
+      // Remove logs for specific chat, except the latest for each validator
+      db.logs = db.logs.filter(log => 
+        log.chatId !== chatId || keepCheckIds.has(log.checkId)
+      );
+    } else if (address !== undefined) {
+      // Remove logs for specific validator address across all chats, except the latest for each chat
+      db.logs = db.logs.filter(log => 
+        log.address !== address || keepCheckIds.has(log.checkId)
+      );
+    } else {
+      // Clear all logs except the latest for each validator/chat combination
+      db.logs = logsToKeep;
+    }
 
     await this.saveDatabase(db);
-    return totalLogsCleared;
+    
+    return {
+      totalCleared: initialLogCount - db.logs.length,
+      keptLogs
+    };
   }
 }
