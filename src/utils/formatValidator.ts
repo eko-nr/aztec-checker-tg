@@ -13,6 +13,7 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
   const statusEmoji = data.status === "Validating" ? "🟢" : "⚠️";
   const blockProposalSuccess = data.totalBlocksMined + data.totalBlocksProposed;
   const blockProposalFailed = data.totalBlocksMissed;
+  const totalBlock = blockProposalSuccess + blockProposalFailed
 
   const recentAttestationStatus = data.recentAttestations
     .slice(0, 5)
@@ -27,7 +28,7 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
 ${statusEmoji} **Status:** ${statusDisplay}
 💰 **Balance:** ${balanceInSTK} STK
 📊 **Attestation Rate:** ${data.attestationSuccess}
-🧊 **Block Proposal Rate:** ${(blockProposalSuccess/(blockProposalSuccess+blockProposalFailed)).toFixed(1)}
+🧊 **Block Proposal Rate:** ${totalBlock > 0 ? (blockProposalSuccess/totalBlock).toFixed(1) : 0}%
 🎁 **Unclaimed Rewards:** ${unclaimedRewardsInSTK} STK
 🕓 **Activation Date:** ${moment(data.activationDate).toLocaleString()}
 
