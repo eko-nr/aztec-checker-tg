@@ -21,7 +21,7 @@ export function formatValidatorMessage(data: ValidatorData, timestamp: string, i
     .join("\n");
 
   return `🔍 **Validator Status Update** (${index+1})
-
+  
 📍 **Index:** ${data.index}
 🏆 **Rank:** \`${data.rank}\`
 📝 **Address:** \`${data.address}\`

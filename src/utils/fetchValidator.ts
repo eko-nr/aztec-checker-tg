@@ -25,7 +25,7 @@ type ValidatorsResponse = {
 
 export async function fetchValidatorData(address: string): Promise<ValidatorData | null> {
   try {
-    const responseValidators = await fetch(`https://dashtec.xyz/api/validators`);
+    const responseValidators = await fetch(`https://dashtec.xyz/api/validators?page=1&limit=10&sortBy=rank&sortOrder=asc&search=${address}`);
     const response = await fetch(`https://dashtec.xyz/api/validators/${address}`);
     
     if (!response.ok || !responseValidators.ok) {
