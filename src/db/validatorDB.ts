@@ -54,6 +54,25 @@ export interface ValidatorData {
   unclaimedRewards: string;
 }
 
+export interface ValidatorDataComparison {
+  current: ValidatorData;
+  previous: ValidatorData | null;
+  changes: {
+    rank?: { current: number; previous: number; change: number; direction: 'up' | 'down' | 'same' };
+    balance?: { current: string; previous: string; change: string; direction: 'up' | 'down' | 'same' };
+    attestationSuccess?: { current: string; previous: string; change: string; direction: 'up' | 'down' | 'same' };
+    totalAttestationsSucceeded?: { current: number; previous: number; change: number; direction: 'up' | 'down' | 'same' };
+    totalAttestationsMissed?: { current: number; previous: number; change: number; direction: 'up' | 'down' | 'same' };
+    totalBlocksProposed?: { current: number; previous: number; change: number; direction: 'up' | 'down' | 'same' };
+    totalBlocksMined?: { current: number; previous: number; change: number; direction: 'up' | 'down' | 'same' };
+    totalBlocksMissed?: { current: number; previous: number; change: number; direction: 'up' | 'down' | 'same' };
+    totalParticipatingEpochs?: { current: number; previous: number; change: number; direction: 'up' | 'down' | 'same' };
+    unclaimedRewards?: { current: string; previous: string; change: string; direction: 'up' | 'down' | 'same' };
+    status?: { current: string; previous: string; changed: boolean };
+  };
+  hasSignificantChanges: boolean;
+}
+
 export interface ValidatorLog {
   address: string;
   chatId: number;
@@ -318,5 +337,192 @@ export class ValidatorDatabase {
       totalCleared: initialLogCount - db.logs.length,
       keptLogs
     };
+  }
+
+  /**
+   * Compare current validator data with previous data and show changes
+   * @param address Validator address
+   * @param chatId Chat ID
+   * @param currentData Current validator data
+   * @returns Comparison object with current, previous data and changes
+   */
+  async getValidatorDataComparison(address: string): Promise<ValidatorDataComparison> {
+    const recentLogs = await this.getRecentLogs(address, 2);
+    const currentData = recentLogs[0].data;
+    const previousData = recentLogs.length > 1 ? recentLogs[1].data : null;
+
+    const comparison: ValidatorDataComparison = {
+      current: currentData,
+      previous: previousData,
+      changes: {},
+      hasSignificantChanges: false
+    };
+
+    if (!previousData) {
+      comparison.hasSignificantChanges = true;
+      return comparison;
+    }
+
+    // Helper function to compare numeric values
+    const compareNumber = (current: number, previous: number) => {
+      const change = current - previous;
+      const direction: 'up' | 'down' | 'same' = change > 0 ? 'up' : change < 0 ? 'down' : 'same';
+      return { current, previous, change, direction };
+    };
+
+    // Helper function to compare string values (for balance, rewards, etc.)
+    const compareString = (current: string, previous: string) => {
+      const currentNum = parseFloat(current) || 0;
+      const previousNum = parseFloat(previous) || 0;
+      const changeNum = currentNum - previousNum;
+      const direction: 'up' | 'down' | 'same' = changeNum > 0 ? 'up' : changeNum < 0 ? 'down' : 'same';
+      const change = changeNum.toString();
+      return { current, previous, change, direction };
+    };
+
+    // Compare rank (note: lower rank number is better)
+    if (currentData.rank !== previousData.rank) {
+      comparison.changes.rank = compareNumber(currentData.rank, previousData.rank);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare balance
+    if (currentData.balance !== previousData.balance) {
+      comparison.changes.balance = compareString(currentData.balance, previousData.balance);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare attestation success rate
+    if (currentData.attestationSuccess !== previousData.attestationSuccess) {
+      comparison.changes.attestationSuccess = compareString(currentData.attestationSuccess, previousData.attestationSuccess);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare total attestations succeeded
+    if (currentData.totalAttestationsSucceeded !== previousData.totalAttestationsSucceeded) {
+      comparison.changes.totalAttestationsSucceeded = compareNumber(currentData.totalAttestationsSucceeded, previousData.totalAttestationsSucceeded);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare total attestations missed
+    if (currentData.totalAttestationsMissed !== previousData.totalAttestationsMissed) {
+      comparison.changes.totalAttestationsMissed = compareNumber(currentData.totalAttestationsMissed, previousData.totalAttestationsMissed);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare total blocks proposed
+    if (currentData.totalBlocksProposed !== previousData.totalBlocksProposed) {
+      comparison.changes.totalBlocksProposed = compareNumber(currentData.totalBlocksProposed, previousData.totalBlocksProposed);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare total blocks mined
+    if (currentData.totalBlocksMined !== previousData.totalBlocksMined) {
+      comparison.changes.totalBlocksMined = compareNumber(currentData.totalBlocksMined, previousData.totalBlocksMined);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare total blocks missed
+    if (currentData.totalBlocksMissed !== previousData.totalBlocksMissed) {
+      comparison.changes.totalBlocksMissed = compareNumber(currentData.totalBlocksMissed, previousData.totalBlocksMissed);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare total participating epochs
+    if (currentData.totalParticipatingEpochs !== previousData.totalParticipatingEpochs) {
+      comparison.changes.totalParticipatingEpochs = compareNumber(currentData.totalParticipatingEpochs, previousData.totalParticipatingEpochs);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare unclaimed rewards
+    if (currentData.unclaimedRewards !== previousData.unclaimedRewards) {
+      comparison.changes.unclaimedRewards = compareString(currentData.unclaimedRewards, previousData.unclaimedRewards);
+      comparison.hasSignificantChanges = true;
+    }
+
+    // Compare status
+    if (currentData.status !== previousData.status) {
+      comparison.changes.status = {
+        current: currentData.status,
+        previous: previousData.status,
+        changed: true
+      };
+      comparison.hasSignificantChanges = true;
+    }
+
+    return comparison;
+  }
+
+  /**
+   * Format changes for display with indicators like +2, -3, etc.
+   * @param comparison Validator data comparison object
+   * @returns Formatted string representation of changes
+   */
+  formatChanges(comparison: ValidatorDataComparison): string {
+    if (!comparison.hasSignificantChanges) {
+      return "No significant changes";
+    }
+
+    const changes: string[] = [];
+
+    if (comparison.changes.rank) {
+      const { change, direction } = comparison.changes.rank;
+      const indicator = direction === 'up' ? `+${change}` : direction === 'down' ? `${change}` : '0';
+      // For rank, up means worse (higher number), down means better (lower number)
+      const trend = direction === 'down' ? '📈' : direction === 'up' ? '📉' : '➡️';
+      changes.push(`Rank: ${comparison.changes.rank.current} (${indicator}) ${trend}`);
+    }
+
+    if (comparison.changes.balance) {
+      const { change, direction } = comparison.changes.balance;
+      const changeNum = parseFloat(change);
+      const indicator = changeNum > 0 ? `+${changeNum.toFixed(4)}` : changeNum.toFixed(4);
+      const trend = direction === 'up' ? '📈' : direction === 'down' ? '📉' : '➡️';
+      changes.push(`Balance: ${comparison.changes.balance.current} (${indicator}) ${trend}`);
+    }
+
+    if (comparison.changes.attestationSuccess) {
+      const { change, direction } = comparison.changes.attestationSuccess;
+      const changeNum = parseFloat(change);
+      const indicator = changeNum > 0 ? `+${changeNum.toFixed(2)}%` : `${changeNum.toFixed(2)}%`;
+      const trend = direction === 'up' ? '📈' : direction === 'down' ? '📉' : '➡️';
+      changes.push(`Attestation Success: ${comparison.changes.attestationSuccess.current} (${indicator}) ${trend}`);
+    }
+
+    if (comparison.changes.totalAttestationsSucceeded) {
+      const { change, direction } = comparison.changes.totalAttestationsSucceeded;
+      const indicator = change > 0 ? `+${change}` : `${change}`;
+      const trend = direction === 'up' ? '📈' : direction === 'down' ? '📉' : '➡️';
+      changes.push(`Attestations Succeeded: ${comparison.changes.totalAttestationsSucceeded.current} (${indicator}) ${trend}`);
+    }
+
+    if (comparison.changes.totalAttestationsMissed) {
+      const { change, direction } = comparison.changes.totalAttestationsMissed;
+      const indicator = change > 0 ? `+${change}` : `${change}`;
+      // For missed attestations, up is bad, down is good
+      const trend = direction === 'down' ? '📈' : direction === 'up' ? '📉' : '➡️';
+      changes.push(`Attestations Missed: ${comparison.changes.totalAttestationsMissed.current} (${indicator}) ${trend}`);
+    }
+
+    if (comparison.changes.totalBlocksMined) {
+      const { change, direction } = comparison.changes.totalBlocksMined;
+      const indicator = change > 0 ? `+${change}` : `${change}`;
+      const trend = direction === 'up' ? '📈' : direction === 'down' ? '📉' : '➡️';
+      changes.push(`Blocks Mined: ${comparison.changes.totalBlocksMined.current} (${indicator}) ${trend}`);
+    }
+
+    if (comparison.changes.unclaimedRewards) {
+      const { change, direction } = comparison.changes.unclaimedRewards;
+      const changeNum = parseFloat(change);
+      const indicator = changeNum > 0 ? `+${changeNum.toFixed(4)}` : changeNum.toFixed(4);
+      const trend = direction === 'up' ? '📈' : direction === 'down' ? '📉' : '➡️';
+      changes.push(`Unclaimed Rewards: ${comparison.changes.unclaimedRewards.current} (${indicator}) ${trend}`);
+    }
+
+    if (comparison.changes.status) {
+      changes.push(`Status: ${comparison.changes.status.previous} → ${comparison.changes.status.current} 🔄`);
+    }
+
+    return changes.join('\n');
   }
 }

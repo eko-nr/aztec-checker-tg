@@ -40,7 +40,7 @@ export default async function showValidators(ctx: Context) {
   let countInactive = 0;
   
   for (const { cachedData, timestamp } of validatorsWithCache) {
-    const message = formatValidatorMessage(cachedData, timestamp, countValidator);
+    const message = await formatValidatorMessage(cachedData, timestamp, countValidator);
 
     await ctx.reply(message, {
       parse_mode: "Markdown"
@@ -86,7 +86,7 @@ export default async function showValidators(ctx: Context) {
       try {
         if (success && data) {
           // Successfully got validator data
-          const message = formatValidatorMessage(data, new Date().toISOString(), countValidator);
+          const message = await formatValidatorMessage(data, new Date().toISOString(), countValidator);
           await database.addLog(validator.address, ctx.chatId!, data);
           
           await ctx.reply(message, {
