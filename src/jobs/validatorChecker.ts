@@ -67,7 +67,7 @@ export function startValidatorChecker(bot: Bot) {
             
             // Only send message if data has changed
             if (hasChanged) {
-              const message = await formatValidatorMessage(data, new Date().toISOString(), 0, true);
+              const message = formatValidatorMessage(data, new Date().toISOString(), 0);
               
               await bot.api.sendMessage(validator.chatId, message, {
                 parse_mode: "Markdown"
