@@ -188,6 +188,16 @@ export class ValidatorDatabase {
     return logs.length > 0 ? logs[0] : null;
   }
 
+  async getPreviousLog(address: string): Promise<ValidatorLog | null> {
+    const logs = await this.getRecentLogs(address, 2);
+    return logs.length > 1 ? logs[1] : null;
+  }
+
+  async getValidatorData(address: string): Promise<ValidatorData | null> {
+    const latestLog = await this.getLatestLog(address);
+    return latestLog ? latestLog.data : null;
+  }
+
   // Check if validator data has changed significantly
   hasDataChanged(oldData: ValidatorData | null, newData: ValidatorData): boolean {
     if (!oldData) return true; // First time checking, always send

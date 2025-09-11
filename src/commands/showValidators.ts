@@ -9,6 +9,7 @@ import { formatTotalValidatorMessage } from "../utils/formatTotalValidator";
 const database = new ValidatorDatabase();
 
 export default async function showValidators(ctx: Context) {
+  console.log("first")
   const validators = await database.getChatValidators(ctx.chatId!);
   
   if (validators.length <= 0) {
@@ -40,7 +41,7 @@ export default async function showValidators(ctx: Context) {
   let countInactive = 0;
   
   for (const { cachedData, timestamp } of validatorsWithCache) {
-    const message = await formatValidatorMessage(cachedData, timestamp, countValidator);
+    const message = await formatValidatorMessage({currentData: cachedData, previousData: null}, timestamp, countValidator);
 
     await ctx.reply(message, {
       parse_mode: "Markdown"
@@ -86,7 +87,7 @@ export default async function showValidators(ctx: Context) {
       try {
         if (success && data) {
           // Successfully got validator data
-          const message = await formatValidatorMessage(data, new Date().toISOString(), countValidator);
+          const message = await formatValidatorMessage({currentData: data, previousData: null}, new Date().toISOString(), countValidator);
           await database.addLog(validator.address, ctx.chatId!, data);
           
           await ctx.reply(message, {

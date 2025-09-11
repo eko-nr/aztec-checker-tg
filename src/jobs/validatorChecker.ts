@@ -60,14 +60,16 @@ export function startValidatorChecker(bot: Bot) {
           if (success && data) {
             // Get the latest log to compare data
             const latestLog = await database.getLatestLog(validator.address);
-            const hasChanged = database.hasDataChanged(latestLog?.data || null, data);
+            const hasChanged = await database.hasDataChanged(latestLog?.data || null, data);
+
+            const validatorData = await database.getValidatorData(validator.address);
+            const message = formatValidatorMessage({currentData: data, previousData: validatorData}, new Date().toISOString(), 0);
             
             // Always save to database
             await database.addLog(validator.address, validator.chatId, data);
             
             // Only send message if data has changed
             if (hasChanged) {
-              const message = formatValidatorMessage(data, new Date().toISOString(), 0);
               
               await bot.api.sendMessage(validator.chatId, message, {
                 parse_mode: "Markdown"
