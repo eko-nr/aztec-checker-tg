@@ -12,7 +12,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
   const gmt7Time = moment(timestamp).tz(zone);
 
   // Determine status display
-  const statusDisplay = data.currentData.status === "Validating" ? "Validator Active" : data.currentData.status;
+  const statusDisplay = data.currentData.status === "Validating" ? "Active" : data.currentData.status;
   const statusEmoji = data.currentData.status === "Validating" ? "🟢" : "⚠️";
 
   const currentBlockProposalSuccess = data.currentData.totalBlocksMined + data.currentData.totalBlocksProposed;
