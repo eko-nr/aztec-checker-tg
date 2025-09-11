@@ -9,7 +9,6 @@ import { formatTotalValidatorMessage } from "../utils/formatTotalValidator";
 const database = new ValidatorDatabase();
 
 export default async function showValidators(ctx: Context) {
-  console.log("first")
   const validators = await database.getChatValidators(ctx.chatId!);
   
   if (validators.length <= 0) {
