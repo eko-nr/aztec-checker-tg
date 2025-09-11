@@ -42,7 +42,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
       return "no changes";
     }
 
-    return change > 0 ? `+${change}` : `-${change}`
+    return change > 0 ? `+${change}` : `${change}`
   }
 
   if(data.previousData){
@@ -53,12 +53,11 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
     const prevBlockProposalFailed = data.previousData.totalBlocksMissed;
     const prevTotalBlock = prevBlockProposalSuccess + prevBlockProposalFailed;
     const prevBlockProsalRate = (prevBlockProposalSuccess/prevTotalBlock*100).toFixed(2)
-    
 
     rankValidatorMsg = `${data.previousData.rank} => ${data.currentData.rank} (${symbolDirection(data.currentData.rank - data.previousData.rank)})`
     balanceStkMsg = `${prevBalanceInStk} => ${currentBalanceInSTK} (${symbolDirection(Number(currentBalanceInSTK) - Number(prevBalanceInStk))})`;
     attestionRateMsg = `${data.previousData.attestationSuccess} => ${data.currentData.attestationSuccess}`;
-    blockProposalORateMsg = `${prevBlockProsalRate} => ${currentBlockProsalRate}`;
+    blockProposalORateMsg = `${currentTotalBlock === 0 ? "0" : prevBlockProsalRate} => ${currentTotalBlock === 0 ? "0" : currentBlockProsalRate}`;
     unclaimedRewardMsg = `${prevUnclaimedRewardsInSTK} => ${currentUnclaimedRewardsInSTK} (${symbolDirection(Number(currentUnclaimedRewardsInSTK) - Number(prevUnclaimedRewardsInSTK))})`;
     totalAttestationMsg = {
       success: `${data.previousData.totalAttestationsSucceeded} => ${data.currentData.totalAttestationsSucceeded}`,
@@ -72,7 +71,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
     rankValidatorMsg = data.currentData.rank.toString();
     balanceStkMsg = currentBalanceInSTK;
     attestionRateMsg = data.currentData.attestationSuccess;
-    blockProposalORateMsg = currentBlockProsalRate;
+    blockProposalORateMsg = currentTotalBlock === 0 ? "0" : currentBlockProsalRate;
     unclaimedRewardMsg = currentUnclaimedRewardsInSTK;
     totalAttestationMsg = {
       success: data.currentData.totalAttestationsSucceeded.toString(),
