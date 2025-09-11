@@ -18,7 +18,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
   const currentBlockProposalSuccess = data.currentData.totalBlocksMined + data.currentData.totalBlocksProposed;
   const currentBlockProposalFailed = data.currentData.totalBlocksMissed;
   const currentTotalBlock = currentBlockProposalSuccess + currentBlockProposalFailed;
-  const currentBlockProsalRate = (currentBlockProposalSuccess/currentTotalBlock*100).toFixed(2)
+  const currentBlockProsalPercent = (currentBlockProposalSuccess/currentTotalBlock*100).toFixed(2)
 
   const currentUnclaimedRewardsInSTK = (parseFloat(data.currentData.unclaimedRewards) / 1e18).toFixed(6);
   const currentBalanceInSTK = (parseFloat(data.currentData.balance) / 1e18).toFixed(4);
@@ -53,27 +53,27 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
     const prevBlockProposalSuccess = data.previousData.totalBlocksMined + data.previousData.totalBlocksProposed;
     const prevBlockProposalFailed = data.previousData.totalBlocksMissed;
     const prevTotalBlock = prevBlockProposalSuccess + prevBlockProposalFailed;
-    const prevBlockProsalRate = (prevBlockProposalSuccess/prevTotalBlock*100).toFixed(2)
+    const prevBlockProsalPercent = (prevBlockProposalSuccess/prevTotalBlock*100).toFixed(2)
 
     rankValidatorMsg = `From ${data.previousData.rank} => ${data.currentData.rank} (${symbolDirection(data.currentData.rank - data.previousData.rank)})`
     balanceStkMsg = `From ${prevBalanceInStk} => ${currentBalanceInSTK} (${symbolDirection(Number(currentBalanceInSTK) - Number(prevBalanceInStk))})`;
-    attestionRateMsg = `From ${data.previousData.attestationSuccess} => ${data.currentData.attestationSuccess}`;
-    blockProposalORateMsg = `From ${currentTotalBlock === 0 ? "0" : prevBlockProsalRate} => ${currentTotalBlock === 0 ? "0" : currentBlockProsalRate}`;
+    attestionRateMsg = `From ${data.previousData.attestationSuccess} => ${data.currentData.attestationSuccess} (${symbolDirection(Number(data.previousData.attestationSuccess.replace("%", "")) || 0 - Number(data.currentData.attestationSuccess.replace("%", "")) || 0)})`;
+    blockProposalORateMsg = `From ${prevBlockProsalPercent || "0"}% => ${currentBlockProsalPercent || "0"}% (${symbolDirection(Number(currentBlockProsalPercent.replace("%", "")) || 0 - Number(prevBlockProsalPercent.replace("%", "")) || 0)})`;
     unclaimedRewardMsg = `From ${prevUnclaimedRewardsInSTK} => ${currentUnclaimedRewardsInSTK} (${symbolDirection(Number(currentUnclaimedRewardsInSTK) - Number(prevUnclaimedRewardsInSTK))})`;
     totalAttestationMsg = {
-      success: `${data.previousData.totalAttestationsSucceeded} => ${data.currentData.totalAttestationsSucceeded}`,
-      missed: `${data.previousData.totalAttestationsMissed} => ${data.currentData.totalAttestationsMissed}`
+      success: `${data.previousData.totalAttestationsSucceeded} => ${data.currentData.totalAttestationsSucceeded} (${symbolDirection(data.currentData.totalAttestationsSucceeded - data.previousData.totalAttestationsSucceeded)})`,
+      missed: `${data.previousData.totalAttestationsMissed} => ${data.currentData.totalAttestationsMissed} (${symbolDirection(data.currentData.totalAttestationsMissed - data.previousData.totalAttestationsMissed)})`
     }
     totalBlockProposalMsg = {
-      success: `${prevBlockProposalSuccess} => ${currentBlockProposalSuccess}`,
-      failed: `${prevBlockProposalFailed} => ${currentBlockProposalFailed}`
+      success: `${prevBlockProposalSuccess} => ${currentBlockProposalSuccess} (${symbolDirection(currentBlockProposalSuccess-prevBlockProposalSuccess)})`,
+      failed: `${prevBlockProposalFailed} => ${currentBlockProposalFailed} (${symbolDirection(currentBlockProposalFailed - prevBlockProposalFailed)})`
     }
     totalParticipatingEpochs = `From ${Number(totalParticipatingEpochs) - 1} => ${totalParticipatingEpochs} (+1)`
   }else{
     rankValidatorMsg = data.currentData.rank.toString();
     balanceStkMsg = currentBalanceInSTK;
     attestionRateMsg = data.currentData.attestationSuccess;
-    blockProposalORateMsg = currentTotalBlock === 0 ? "0" : currentBlockProsalRate;
+    blockProposalORateMsg = currentTotalBlock === 0 ? "0" : currentBlockProsalPercent;
     unclaimedRewardMsg = currentUnclaimedRewardsInSTK;
     totalAttestationMsg = {
       success: data.currentData.totalAttestationsSucceeded.toString(),
