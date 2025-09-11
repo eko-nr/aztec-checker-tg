@@ -91,7 +91,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
     .map(att => `Slot ${att.slot}: ${att.status === "Success" ? "✅" : "❌"}`)
     .join("\n");
 
-  return `🔍 **Validator ${data.previousData ? "Status Update" : "Data"}** ${data.previousData? "" : `(${index+1})`}
+  return `🔍 **Validator ${data.previousData ? "Status Update" : "Status Data"}** ${data.previousData? "" : `(${index+1})`}
   
 📍 **Index:** ${data.currentData.index}
 🏆 **Rank:** \`${rankValidatorMsg}\`
