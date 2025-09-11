@@ -93,7 +93,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
 
   return `🔍 **Validator ${data.previousData ? "Status Update" : "Status Data"}** ${data.previousData? "" : `(${index+1})`}
   
-📍 **Index:** ${data.currentData.index}
+📍 **Index:** \`${data.currentData.index}\`
 🏆 **Rank:** \`${rankValidatorMsg}\`
 📝 **Address:** \`${data.currentData.address}\`
 ${statusEmoji} **Status:** \`${statusDisplay}\`
