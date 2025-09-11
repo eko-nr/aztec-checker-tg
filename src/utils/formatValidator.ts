@@ -56,13 +56,13 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
     
 
     rankValidatorMsg = `${data.previousData.rank} => ${data.currentData.rank} (${symbolDirection(data.currentData.rank - data.previousData.rank)})`
-    balanceStkMsg = `${prevBalanceInStk} => ${currentBalanceInSTK} (${symbolDirection(Number(currentBalanceInSTK) - Number(prevBalanceInStk))}})`;
-    attestionRateMsg = `${data.previousData.attestationSuccess} => ${data.currentData.attestationSuccess} (${symbolDirection(Number(data.currentData.attestationSuccess) - Number(data.previousData.attestationSuccess))})`;
-    blockProposalORateMsg = `${prevBlockProsalRate} => ${currentBlockProsalRate} (${symbolDirection(Number(currentBlockProsalRate) - Number(prevBlockProsalRate))}})`;
+    balanceStkMsg = `${prevBalanceInStk} => ${currentBalanceInSTK} (${symbolDirection(Number(currentBalanceInSTK) - Number(prevBalanceInStk))})`;
+    attestionRateMsg = `${data.previousData.attestationSuccess} => ${data.currentData.attestationSuccess}`;
+    blockProposalORateMsg = `${prevBlockProsalRate} => ${currentBlockProsalRate}`;
     unclaimedRewardMsg = `${prevUnclaimedRewardsInSTK} => ${currentUnclaimedRewardsInSTK} (${symbolDirection(Number(currentUnclaimedRewardsInSTK) - Number(prevUnclaimedRewardsInSTK))})`;
     totalAttestationMsg = {
       success: `${data.previousData.totalAttestationsSucceeded} => ${data.currentData.totalAttestationsSucceeded}`,
-      missed: `${data.previousData.totalAttestationsMissed} =>${data.currentData.totalAttestationsMissed}`
+      missed: `${data.previousData.totalAttestationsMissed} => ${data.currentData.totalAttestationsMissed}`
     }
     totalBlockProposalMsg = {
       success: `${prevBlockProposalSuccess} => ${currentBlockProposalSuccess}`,
