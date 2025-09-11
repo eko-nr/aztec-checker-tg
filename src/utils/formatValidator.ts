@@ -96,17 +96,17 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
 📍 **Index:** ${data.currentData.index}
 🏆 **Rank:** \`${rankValidatorMsg}\`
 📝 **Address:** \`${data.currentData.address}\`
-${statusEmoji} **Status:** ${statusDisplay}
-💰 **Balance:** ${balanceStkMsg} STK
-📊 **Attestation Rate:** ${attestionRateMsg}
-🧊 **Block Proposal Rate:** ${blockProposalORateMsg}%
-🎁 **Unclaimed Rewards:** ${unclaimedRewardMsg} STK
-🕓 **Activation Date:** ${moment(data.currentData.activationDate).toLocaleString()}
+${statusEmoji} **Status:** \`${statusDisplay}\`
+💰 **Balance:** \`${balanceStkMsg} STK\`
+📊 **Attestation Rate:** \`${attestionRateMsg}\`
+🧊 **Block Proposal Rate:** \`${blockProposalORateMsg}%\`
+🎁 **Unclaimed Rewards:** \`${unclaimedRewardMsg} STK\`
+🕓 **Activation Date:** \`${moment(data.currentData.activationDate).toLocaleString()}\`
 
 📈 **Performance:**
-• Total Attestations: ${totalAttestationMsg.success} ✅ / ${totalAttestationMsg.missed} ❌
-• Blocks Prosal or Mined: ${totalBlockProposalMsg.success} ✅ / ${totalBlockProposalMsg.failed} ❌
-• Participating Epochs: ${totalParticipatingEpochs}
+• Total Attestations: \`${totalAttestationMsg.success} ✅ / ${totalAttestationMsg.missed} ❌\`
+• Blocks Prosal or Mined: \`${totalBlockProposalMsg.success} ✅ / ${totalBlockProposalMsg.failed} ❌\`
+• Participating Epochs: \`${totalParticipatingEpochs}\`
 
 🕒 **Recent Attestations:**
 ${recentAttestationStatus}
