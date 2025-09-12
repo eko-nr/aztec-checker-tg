@@ -68,7 +68,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
       success: `${prevBlockProposalSuccess} => ${currentBlockProposalSuccess} (${symbolDirection(currentBlockProposalSuccess-prevBlockProposalSuccess)})`,
       failed: `${prevBlockProposalFailed} => ${currentBlockProposalFailed} (${symbolDirection(currentBlockProposalFailed - prevBlockProposalFailed)})`
     }
-    totalParticipatingEpochs = `From ${Number(totalParticipatingEpochs) - 1} => ${totalParticipatingEpochs} (+1)`
+    totalParticipatingEpochs = `From ${data.previousData.totalParticipatingEpochs} => ${data.currentData.totalParticipatingEpochs} (${symbolDirection(data.currentData.totalParticipatingEpochs - data.previousData.totalParticipatingEpochs)})`
   }else{
     rankValidatorMsg = data.currentData.rank.toString();
     balanceStkMsg = currentBalanceInSTK;
