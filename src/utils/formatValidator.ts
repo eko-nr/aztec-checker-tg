@@ -57,16 +57,16 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
 
     rankValidatorMsg = `From ${data.previousData.rank} => ${data.currentData.rank} (${symbolDirection(data.currentData.rank - data.previousData.rank)})`
     balanceStkMsg = `From ${prevBalanceInStk} => ${currentBalanceInSTK} (${symbolDirection(Number(currentBalanceInSTK) - Number(prevBalanceInStk))})`;
-    attestionRateMsg = `From ${data.previousData.attestationSuccess} => ${data.currentData.attestationSuccess} (${symbolDirection(Number(data.previousData.attestationSuccess.replace("%", "")) || 0 - Number(data.currentData.attestationSuccess.replace("%", "")) || 0)})`;
-    blockProposalORateMsg = `From ${prevBlockProsalPercent || "0"}% => ${currentBlockProsalPercent || "0"}% (${symbolDirection(Number(currentBlockProsalPercent.replace("%", "")) || 0 - Number(prevBlockProsalPercent.replace("%", "")) || 0)})`;
+    attestionRateMsg = `From ${data.previousData.attestationSuccess} => ${data.currentData.attestationSuccess}`;
+    blockProposalORateMsg = `From ${prevBlockProsalPercent || "0"}% => ${currentBlockProsalPercent || "0"}%`;
     unclaimedRewardMsg = `From ${prevUnclaimedRewardsInSTK} => ${currentUnclaimedRewardsInSTK} (${symbolDirection(Number(currentUnclaimedRewardsInSTK) - Number(prevUnclaimedRewardsInSTK))})`;
     totalAttestationMsg = {
       success: `${data.previousData.totalAttestationsSucceeded} => ${data.currentData.totalAttestationsSucceeded} (${symbolDirection(data.currentData.totalAttestationsSucceeded - data.previousData.totalAttestationsSucceeded)})`,
       missed: `${data.previousData.totalAttestationsMissed} => ${data.currentData.totalAttestationsMissed} (${symbolDirection(data.currentData.totalAttestationsMissed - data.previousData.totalAttestationsMissed)})`
     }
     totalBlockProposalMsg = {
-      success: `${prevBlockProposalSuccess} => ${currentBlockProposalSuccess} (${symbolDirection(currentBlockProposalSuccess-prevBlockProposalSuccess)})`,
-      failed: `${prevBlockProposalFailed} => ${currentBlockProposalFailed} (${symbolDirection(currentBlockProposalFailed - prevBlockProposalFailed)})`
+      success: `${prevBlockProposalSuccess} => ${currentBlockProposalSuccess}`,
+      failed: `${prevBlockProposalFailed} => ${currentBlockProposalFailed}`
     }
     totalParticipatingEpochs = `From ${Number(totalParticipatingEpochs) - 1} => ${totalParticipatingEpochs} (+1)`
   }else{
