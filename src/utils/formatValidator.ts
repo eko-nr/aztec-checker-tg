@@ -65,8 +65,8 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
       missed: `${data.previousData.totalAttestationsMissed} => ${data.currentData.totalAttestationsMissed} (${symbolDirection(data.currentData.totalAttestationsMissed - data.previousData.totalAttestationsMissed)})`
     }
     totalBlockProposalMsg = {
-      success: `${prevBlockProposalSuccess} => ${currentBlockProposalSuccess}`,
-      failed: `${prevBlockProposalFailed} => ${currentBlockProposalFailed}`
+      success: `${prevBlockProposalSuccess} => ${currentBlockProposalSuccess} (${symbolDirection(currentBlockProposalSuccess-prevBlockProposalSuccess)})`,
+      failed: `${prevBlockProposalFailed} => ${currentBlockProposalFailed} (${symbolDirection(currentBlockProposalFailed - prevBlockProposalFailed)})`
     }
     totalParticipatingEpochs = `From ${Number(totalParticipatingEpochs) - 1} => ${totalParticipatingEpochs} (+1)`
   }else{
