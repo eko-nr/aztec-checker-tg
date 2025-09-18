@@ -68,8 +68,8 @@ export async function handleBroadcastMessage(ctx: Context) {
     // Send message to each chat
     for (const chatId of uniqueChatIds) {
       try {
-        await ctx.api.sendMessage(chatId, `📢 **Announcement**\n\n${messageText}`, {
-          parse_mode: "Markdown"
+        await ctx.api.sendMessage(chatId, `${messageText}`, {
+          parse_mode: "HTML"
         });
         successCount++;
         

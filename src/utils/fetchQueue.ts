@@ -23,7 +23,7 @@ export interface ValidatorsResponse {
 
 export async function fetchQueue(address: string): Promise<ValidatorsResponse | null> {
   try {
-    const response = await fetch(`https://dashtec.xyz/api/validators/queue?page=1&limit=10&search=${address}`);
+    const response = await fetch(`https://dev.dashtec.xyz/api/validators/queue?page=1&limit=10&search=${address}`);
     
     if (!response.ok) {
       console.error(`Fetch queue request failed with status: ${response.status} for address: ${address}`);

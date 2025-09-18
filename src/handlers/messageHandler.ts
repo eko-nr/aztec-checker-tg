@@ -3,12 +3,11 @@ import { handleBroadcastMessage } from "../commands/broadCastMessage";
 
 export default async function messageHandler(ctx: Context) {
   const text = ctx.message?.text;
+  const adminId = process.env.ADMIN_ID;
 
-  await handleBroadcastMessage(ctx);
+  if(ctx.chatId?.toString() === adminId){
+    await handleBroadcastMessage(ctx);
+  }
 
   if (!text) return;
-
-  if (text.toLowerCase().includes("hello")) {
-    ctx.reply("Hey there 👋");
-  }
 }

@@ -20,7 +20,7 @@ export type ValidatorStats = {
 
 export async function fetchEpoch(): Promise<ValidatorStats | null> {
   try {
-    const response = await fetch(`https://dashtec.xyz/api/dashboard/current-epoch-stats`);
+    const response = await fetch(`https://dev.dashtec.xyz/api/dashboard/current-epoch-stats`);
     
     if (!response.ok) {
       return null;
