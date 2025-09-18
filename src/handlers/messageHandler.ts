@@ -1,7 +1,10 @@
 import { Context } from "grammy";
+import { handleBroadcastMessage } from "../commands/broadCastMessage";
 
-export default function messageHandler(ctx: Context) {
+export default async function messageHandler(ctx: Context) {
   const text = ctx.message?.text;
+
+  await handleBroadcastMessage(ctx);
 
   if (!text) return;
 
