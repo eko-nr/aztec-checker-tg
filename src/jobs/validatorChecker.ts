@@ -59,7 +59,7 @@ export function startValidatorChecker(bot: Bot) {
       for (const result of results) {
         const { validator, data, success, error } = result;
         if(data?.status === "inactive_on_contract"){
-          return
+          continue
         }
         
         try {
