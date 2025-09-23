@@ -13,7 +13,6 @@ export async function startEpochFetcher(bot: Bot) {
 
     if(currentEpoch){
       const nextEpochNumber = currentEpoch?.currentEpochMetrics.epochNumber + 1;
-      const epochManagerStats = await epochManager.getStatistics()
       
       await epochManager.fetchBulkAndSave(nextEpochNumber, nextEpochNumber+totalSavingFutureEpoch);
     }
