@@ -147,7 +147,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, e
   const upcomingEpochs = epoch.epochs
     .filter(e => e.epoch > epoch.currentEpoch)
     .sort((a, b) => a.epoch - b.epoch)
-    .slice(0, 10)
+    .slice(0, 8)
     .map(e => {
       const epochTime = moment().tz(zone).add((e.epoch - epoch.currentEpoch) * EPOCH_DURATION_MINUTES, 'minutes');
       const timeLeft = moment.duration(epochTime.diff(moment().tz(zone)));
@@ -169,7 +169,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, e
         timeLeftStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
       }
       
-      return `\`• Epoch ${e.epoch} - About ${epochTime.format('YYYY MMM DD, HH:mm [GMT]Z')} - in (${timeLeftStr})\``;
+      return `\`• Epoch ${e.epoch} - About ${epochTime.format('YYYY MMM DD, HH:mm [GMT]ZZ')} - in (${timeLeftStr})\``;
     });
   
   const upcomingEpochsInfo = upcomingEpochs.length > 0 
