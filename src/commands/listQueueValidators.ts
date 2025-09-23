@@ -34,6 +34,7 @@ export default async function listQueueValidators(ctx: Context, edit = false) {
 
       if(Number(key)+1 >= validators.length){
         keyboard.text("✖ Close", `close`);
+        console.log("first 33")
       }
     }
 
