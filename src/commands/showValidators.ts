@@ -5,11 +5,15 @@ import { fetchValidatorData } from "../utils/fetchValidator";
 import { fetchQueue } from "../utils/fetchQueue";
 import { formatQueue } from "../utils/formatQueue";
 import { formatTotalValidatorMessage } from "../utils/formatTotalValidator";
+import EpochDataManager from "../db/epochManager";
+import { fetchEpoch } from "../utils/fetchEpoch";
 
 const database = new ValidatorDatabase();
+const epochManager = new EpochDataManager()
 
 export default async function showValidators(ctx: Context) {
   const validators = await database.getChatValidators(ctx.chatId!);
+  const currentEpoch = await fetchEpoch()
   
   if (validators.length <= 0) {
     ctx.reply("⚠️ You don't have any validator");
@@ -40,7 +44,18 @@ export default async function showValidators(ctx: Context) {
   let countInactive = 0;
   
   for (const { cachedData, timestamp } of validatorsWithCache) {
-    const message = await formatValidatorMessage({currentData: cachedData, previousData: null}, timestamp, countValidator);
+    const message = await formatValidatorMessage(
+      {
+        currentData: cachedData,
+        previousData: null
+      },
+      timestamp,
+      {
+        currentEpoch: currentEpoch?.currentEpochMetrics.epochNumber || 0,
+        epochs: await epochManager.searchValidatorByAddress(cachedData.address)
+      },
+      countValidator
+    );
 
     await ctx.reply(message, {
       parse_mode: "Markdown"
@@ -86,7 +101,15 @@ export default async function showValidators(ctx: Context) {
       try {
         if (success && data) {
           // Successfully got validator data
-          const message = await formatValidatorMessage({currentData: data, previousData: null}, new Date().toISOString(), countValidator);
+          const message = await formatValidatorMessage(
+            {currentData: data, previousData: null},
+            new Date().toISOString(),
+            {
+              currentEpoch: currentEpoch?.currentEpochMetrics.epochNumber || 0,
+              epochs: await epochManager.searchValidatorByAddress(validator.address)
+            },
+            countValidator
+          );
           await database.addLog(validator.address, ctx.chatId!, data);
           
           await ctx.reply(message, {

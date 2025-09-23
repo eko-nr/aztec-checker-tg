@@ -2,13 +2,66 @@ import { ValidatorData } from "../db/validatorDB";
 import moment from 'moment-timezone'
 
 const zone = "Asia/Bangkok"
+const EPOCH_DURATION_MINUTES = 20; // 20 minutes per epoch
 
 type DataValidator = {
   currentData: ValidatorData;
   previousData: ValidatorData | null;
 }
 
-export function formatValidatorMessage(data: DataValidator, timestamp: string, index?: number): string {
+interface CleanValidatorActivity {
+  validatorIndex: string;
+  validatorAddress: string;
+  displayName: string;
+  x_handle: string | null;
+  name: string | null;
+  slotsCount: number;
+}
+
+type Epoch = {
+  currentEpoch: number;
+  epochs: Array<{
+    epoch: number;
+    validator: CleanValidatorActivity;
+    timestamp: string;
+  }>
+}
+
+// Function to calculate next epoch time
+function calculateNextEpochTime(currentEpoch: number, targetEpoch: number): string {
+  const epochsToWait = targetEpoch - currentEpoch;
+  const minutesToWait = epochsToWait * EPOCH_DURATION_MINUTES;
+  
+  const nextEpochTime = moment().tz(zone).add(minutesToWait, 'minutes');
+  const now = moment().tz(zone);
+  
+  // Calculate time remaining
+  const duration = moment.duration(nextEpochTime.diff(now));
+  
+  let timeRemaining = "";
+  if (duration.asHours() >= 1) {
+    const hours = Math.floor(duration.asHours());
+    const minutes = duration.minutes();
+    timeRemaining = `${hours}h ${minutes}m`;
+  } else {
+    const minutes = Math.floor(duration.asMinutes());
+    const seconds = duration.seconds();
+    timeRemaining = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+  }
+  
+  return `Epoch ${targetEpoch} in ${timeRemaining} (${nextEpochTime.format('MMM DD, HH:mm')} ${zone})`;
+}
+
+// Function to find next upcoming epoch for this validator
+function findNextValidatorEpoch(currentEpoch: number, epochs: Epoch['epochs']): number | null {
+  const futureEpochs = epochs
+    .filter(e => e.epoch > currentEpoch)
+    .sort((a, b) => a.epoch - b.epoch);
+  
+  return futureEpochs.length > 0 ? futureEpochs[0].epoch : null;
+}
+
+export function formatValidatorMessage(data: DataValidator, timestamp: string, epoch: Epoch, index?: number): string {
   const gmt7Time = moment(timestamp).tz(zone);
 
   // Determine status display
@@ -85,11 +138,43 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
     }
   }
 
-
   const recentAttestationStatus = data.currentData.recentAttestations
     .slice(0, 5)
     .map(att => `Slot ${att.slot}: ${att.status === "Success" ? "✅" : "❌"}`)
     .join("\n");
+
+  // Find upcoming epochs (up to 5)
+  const upcomingEpochs = epoch.epochs
+    .filter(e => e.epoch > epoch.currentEpoch)
+    .sort((a, b) => a.epoch - b.epoch)
+    .slice(0, 5)
+    .map(e => {
+      const epochTime = moment().tz(zone).add((e.epoch - epoch.currentEpoch) * EPOCH_DURATION_MINUTES, 'minutes');
+      const timeLeft = moment.duration(epochTime.diff(moment().tz(zone)));
+      
+      // Format time left
+      let timeLeftStr = "";
+      if (timeLeft.asDays() >= 1) {
+        const days = Math.floor(timeLeft.asDays());
+        const hours = timeLeft.hours();
+        const minutes = timeLeft.minutes();
+        timeLeftStr = `${days}d ${hours}h ${minutes}m`;
+      } else if (timeLeft.asHours() >= 1) {
+        const hours = Math.floor(timeLeft.asHours());
+        const minutes = timeLeft.minutes();
+        timeLeftStr = `${hours}h ${minutes}m`;
+      } else {
+        const minutes = Math.floor(timeLeft.asMinutes());
+        const seconds = timeLeft.seconds();
+        timeLeftStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+      }
+      
+      return `\`Epoch ${e.epoch} - ${epochTime.format('YYYY MMM DD, HH:mm')} - in (${timeLeftStr})\``;
+    });
+  
+  const upcomingEpochsInfo = upcomingEpochs.length > 0 
+    ? upcomingEpochs.join('\n')
+    : "No upcoming epochs scheduled";
 
   return `🔍 **Validator ${data.previousData ? "Status Update" : "Status Data"}** ${index !== undefined ? `(${index+1})` : ""}
   
@@ -111,5 +196,10 @@ ${statusEmoji} **Status:** \`${statusDisplay}\`
 🕒 **Recent Attestations:**
 ${recentAttestationStatus}
 
-⏰ Last checked: ${gmt7Time.toLocaleString()}`;
+📅 **Upcoming Epochs:**
+${upcomingEpochsInfo}
+`;
 }
+
+// Export utility functions
+export { calculateNextEpochTime, findNextValidatorEpoch };
