@@ -1,12 +1,14 @@
 import { Context, InlineKeyboard } from "grammy";
 import { ValidatorDatabase } from "../db/validatorDB";
 import { weiToEther } from "../utils/weiToEther";
+import { fetchEpoch } from "../utils/fetchEpoch";
 
 const database = new ValidatorDatabase();
 
 export default async function listValidators(ctx: Context, edit = false) {
   const validators = await database.getChatValidators(ctx.chatId!);
   const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length);
+  const currentEpoch = await fetchEpoch()
   
   try {
     const keyboard = new InlineKeyboard()
@@ -34,7 +36,7 @@ export default async function listValidators(ctx: Context, edit = false) {
         keyboard.text(block, "null");
         keyboard.row()
         
-        const participation = `Participation: ${findRecentLogs.data.totalParticipatingEpochs}/234`
+        const participation = `Participation Epoch: ${findRecentLogs.data.totalParticipatingEpochs}/${currentEpoch?.currentEpochMetrics.epochNumber}`
         keyboard.text(participation, "null");
         keyboard.row()
         
