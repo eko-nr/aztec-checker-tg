@@ -1,5 +1,6 @@
 import { Context } from "grammy";
 import { ValidatorDatabase } from "../db/validatorDB";
+import { fetchValidatorData } from "../utils/fetchValidator";
 
 // Regex to validate an EVM address
 const evmRegex = /^0x[a-fA-F0-9]{40}$/;
@@ -27,16 +28,17 @@ export default async function addValidatorCommand(ctx: Context) {
     const added = await database.addValidator(address, ctx.chat!.id);
     
     if (added) {
-      // Simulate a path for the validator
-      const path = `/validators/${address}.json`;
-      
-      return ctx.reply(
+      ctx.reply(
         `✅ Validator added!\n\n` +
         `🔔 You will receive status updates for this validator.`,
         {
           parse_mode: "Markdown",
         }
       );
+      
+      const data = await fetchValidatorData(address);
+      data && await database.addLog(address, ctx.chatId!, data);
+      
     } else {
       return ctx.reply(
         `⚠️ Validator already exists!\n\n` +

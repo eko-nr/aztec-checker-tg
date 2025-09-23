@@ -10,6 +10,7 @@ import removeValidatorCommand from "./commands/removeValidators";
 import getEpochValidatorCommand from "./commands/getEpochValidator";
 import broadCastMessageCommand from "./commands/broadCastMessage";
 import listValidatorsCommand from "./commands/listValidators";
+import listQueueValidatorsCommand from "./commands/listQueueValidators";
 import callbackHandler from "./handlers/callbackHandler";
 import { startEpochFetcher } from "./jobs/epochFetcher";
 
@@ -28,6 +29,7 @@ bot.command("epoch", epochCommand);
 bot.command("get_epoch_validator", getEpochValidatorCommand);
 bot.command("broadcast", broadCastMessageCommand);
 bot.command("list_validators", (ctx) => listValidatorsCommand(ctx));
+bot.command("list_queue_validators", (ctx) => listQueueValidatorsCommand(ctx));
 
 // handler
 bot.on("message:text", messageHandler);

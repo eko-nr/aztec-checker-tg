@@ -17,27 +17,15 @@ export default async function listValidators(ctx: Context, edit = false) {
 
       const cleanAddress = `${address.substring(0, 5)}...${address.substring(address.length - 5, address.length)}`;
       
-      if(findRecentLogs){
+      if(!findRecentLogs){
         let message = `${count+1}. ${cleanAddress}`
         keyboard.text(message, `show_${address}`);
-        keyboard.row()
-
-        keyboard.text(`Balance: ${findRecentLogs.data.balance}`, "null");
-
-        let attestation = `Attestation: ${findRecentLogs?.data.totalAttestationsSucceeded} ✅ || ${findRecentLogs?.data.totalAttestationsMissed} ❌  `
-        keyboard.text(attestation, "null");
-        keyboard.row()
-        
-        const block = `Block: ${findRecentLogs.data.totalBlocksMined + findRecentLogs.data.totalBlocksProposed} ✅|| ${findRecentLogs.data.totalBlocksMissed} ❌`
-        keyboard.text(block, "null");
-
-        const participation = `Participation: ${findRecentLogs.data.totalParticipatingEpochs}/234`
-        keyboard.text(participation, "null");
         keyboard.row()
         
         keyboard.text("❌ Delete", `del_${address}`);
         keyboard.text("👀 Show", `show_${address}`);
         keyboard.row()
+
         keyboard.text("━━━━━━━━━━━━━━━━━━━━", `null`);
         keyboard.row()
 
@@ -47,7 +35,7 @@ export default async function listValidators(ctx: Context, edit = false) {
 
     keyboard.text("✖ Close", `close`);
 
-    !edit? await ctx.reply("🎯 Here is your validators:", { reply_markup: keyboard }) : await ctx.editMessageText("🎯 Here is your validators:", { reply_markup: keyboard }) 
+    !edit? await ctx.reply("🎯 Here is your queue validators:", { reply_markup: keyboard }) : await ctx.editMessageText("🎯 Here is your validators:", { reply_markup: keyboard }) 
   } catch (error) {
     ctx.reply("❌ Failed to get epoch, try again later")
   }
