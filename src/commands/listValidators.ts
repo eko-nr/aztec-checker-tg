@@ -23,15 +23,17 @@ export default async function listValidators(ctx: Context, edit = false) {
         keyboard.text(message, `show_${address}`);
         keyboard.row()
 
-        keyboard.text(`Balance: ${(findRecentLogs.data.balance)} STK`, "null");
+        keyboard.text(`Balance: ${weiToEther(findRecentLogs.data.balance)} STK`, "null");
+        keyboard.text(`Unclaimed Reward: ${weiToEther(findRecentLogs.data.unclaimedRewards)} STK`, "null")
+        keyboard.row();
 
         let attestation = `Attestation: ${findRecentLogs?.data.totalAttestationsSucceeded} ✅ || ${findRecentLogs?.data.totalAttestationsMissed} ❌  `
         keyboard.text(attestation, "null");
-        keyboard.row()
         
         const block = `Block: ${findRecentLogs.data.totalBlocksMined + findRecentLogs.data.totalBlocksProposed} ✅|| ${findRecentLogs.data.totalBlocksMissed} ❌`
         keyboard.text(block, "null");
-
+        keyboard.row()
+        
         const participation = `Participation: ${findRecentLogs.data.totalParticipatingEpochs}/234`
         keyboard.text(participation, "null");
         keyboard.row()
