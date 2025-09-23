@@ -21,7 +21,7 @@ export interface EpochValidator {
 
 export async function fethEpochValidator(epoch: number): Promise<EpochValidator | null> {
   try {
-    const response = await fetch(`https://dashtec.xyz/api/epochs/${epoch}/live-slot-activity`);
+    const response = await fetch(`https://dev.dashtec.xyz/api/epochs/${epoch}/live-slot-activity`);
     
     if (!response.ok) {
       console.error(`Fetch epoch validator failed with status: ${response.status} for epoch: ${epoch}`);
