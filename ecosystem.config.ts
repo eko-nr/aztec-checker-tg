@@ -1,0 +1,10 @@
+module.exports = {
+  apps: [
+    {
+      name: "aztec monitor",
+      script: "bash",
+      args: "-c 'taskset -c 0-2 bun dev'",
+      watch: true
+    }
+  ]
+}
