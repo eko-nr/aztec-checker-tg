@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "aztec monitor",
       script: "bash",
-      args: "-c 'taskset -c 0-2 bun dev'",
+      args: "-c 'taskset -c 0-2 bun start'",
       watch: true
     }
   ]
