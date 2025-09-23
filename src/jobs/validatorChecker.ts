@@ -129,7 +129,7 @@ export function startValidatorChecker(bot: Bot) {
     console.log("🚀 Validator status checker initialized");
   });
 
-  cron.schedule("*/4 * * * *", async () => {
+  cron.schedule("*/3 * * * *", async () => {
     const validators = await database.getValidators();
     const currentEpoch = await fetchEpoch();
 
