@@ -2,6 +2,7 @@ import { Context } from "grammy";
 import { showValidator } from "../services/showValidator";
 import { deleteValidator } from "../services/deleteValidator";
 import { deleteMessage } from "../services/deleteMessage";
+import listValidators from "../commands/listValidators";
 
 export default async function callbackHandler(ctx: Context) {
   const data = ctx.callbackQuery?.data;
@@ -10,7 +11,9 @@ export default async function callbackHandler(ctx: Context) {
     showValidator(ctx);
   }else if(data?.includes("del")){
     deleteValidator(ctx);
-  }else {
+  }else if(data?.includes("list_validator")){
+    listValidators(ctx, true)
+  }else if(data?.includes("close")){
     deleteMessage(ctx)
   }
 

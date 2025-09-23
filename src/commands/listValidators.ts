@@ -3,7 +3,7 @@ import { ValidatorDatabase } from "../db/validatorDB";
 
 const database = new ValidatorDatabase();
 
-export default async function listValidators(ctx: Context) {
+export default async function listValidators(ctx: Context, edit = false) {
   const validators = await database.getChatValidators(ctx.chatId!);
   const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length);
   
@@ -25,7 +25,7 @@ export default async function listValidators(ctx: Context) {
 
     keyboard.text("⊘ Close", `close`);
 
-    await ctx.reply("🎯 Here is your validators:", { reply_markup: keyboard });
+    !edit? await ctx.reply("🎯 Here is your validators:", { reply_markup: keyboard }) : await ctx.editMessageText("🎯 Here is your validators:", { reply_markup: keyboard }) 
   } catch (error) {
     ctx.reply("❌ Failed to get epoch, try again later")
   }
