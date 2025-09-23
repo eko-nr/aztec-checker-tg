@@ -7,6 +7,7 @@ export const deleteValidator = async(ctx: Context) => {
   try {
     const data = ctx.callbackQuery?.data    
     const isConfirmed = data?.includes("confirmed")
+    const isIncludeQueue = data?.includes("del_q_")
     const address = data?.split("_")?.[1]
 
     if(isConfirmed){
@@ -19,11 +20,20 @@ export const deleteValidator = async(ctx: Context) => {
         await ctx.editMessageText("⚠️ Couldn't delete validator")
       }
     }else{
-      const keyboard = new InlineKeyboard();
-      keyboard.text("Confirm", `del_confirmed_${address}`);
-      keyboard.text("🔙 Back", `list_validator`);
-
-      await ctx.editMessageText(`⚠️ Continue to delete validator ${address}?`, { reply_markup: keyboard });
+      if(isIncludeQueue){
+        const address = data?.split("_")?.[2]
+        const keyboard = new InlineKeyboard();
+        keyboard.text("Confirm", `del_confirmed_${address}`);
+        keyboard.text("🔙 Back", `list_queue_validator`);
+  
+        await ctx.editMessageText(`⚠️ Continue to delete validator ${address}?`, { reply_markup: keyboard });
+      }else{
+        const keyboard = new InlineKeyboard();
+        keyboard.text("Confirm", `del_confirmed_${address}`);
+        keyboard.text("🔙 Back", `list_validator`);
+  
+        await ctx.editMessageText(`⚠️ Continue to delete validator ${address}?`, { reply_markup: keyboard });
+      }
     }
 
   } catch (error) {

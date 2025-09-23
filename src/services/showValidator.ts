@@ -37,6 +37,8 @@ export const showValidator = async (ctx: Context) => {
         await ctx.editMessageText(message, {
           parse_mode: "Markdown"
         });
+      }else{
+
       }
     }
 

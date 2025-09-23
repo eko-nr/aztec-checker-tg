@@ -3,7 +3,7 @@ import { ValidatorDatabase } from "../db/validatorDB";
 
 const database = new ValidatorDatabase();
 
-export default async function listValidators(ctx: Context, edit = false) {
+export default async function listQueueValidators(ctx: Context, edit = false) {
   const validators = await database.getChatValidators(ctx.chatId!);
   const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length);
   
@@ -22,7 +22,7 @@ export default async function listValidators(ctx: Context, edit = false) {
         keyboard.text(message, `show_${address}`);
         keyboard.row()
         
-        keyboard.text("❌ Delete", `del_${address}`);
+        keyboard.text("❌ Delete", `del_q_${address}`);
         keyboard.text("👀 Show", `show_${address}`);
         keyboard.row()
 

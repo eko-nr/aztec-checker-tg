@@ -3,6 +3,7 @@ import { showValidator } from "../services/showValidator";
 import { deleteValidator } from "../services/deleteValidator";
 import { deleteMessage } from "../services/deleteMessage";
 import listValidators from "../commands/listValidators";
+import listQueueValidators from "../commands/listQueueValidators";
 
 export default async function callbackHandler(ctx: Context) {
   const data = ctx.callbackQuery?.data;
@@ -13,6 +14,8 @@ export default async function callbackHandler(ctx: Context) {
     deleteValidator(ctx);
   }else if(data?.includes("list_validator")){
     listValidators(ctx, true)
+  }else if(data?.includes("list_queue_validator")){
+    listQueueValidators(ctx, true)
   }else if(data?.includes("close")){
     deleteMessage(ctx)
   }
