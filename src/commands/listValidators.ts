@@ -24,7 +24,7 @@ export default async function listValidators(ctx: Context, edit = false) {
         keyboard.row()
 
         keyboard.text(`Balance: ${weiToEther(findRecentLogs.data.balance)} STK`, "null");
-        keyboard.text(`Unclaimed Reward: ${weiToEther(findRecentLogs.data.unclaimedRewards)} STK`, "null")
+        keyboard.text(`Unclaimed Rewards: ${weiToEther(findRecentLogs.data.unclaimedRewards)} STK`, "null")
         keyboard.row();
 
         let attestation = `Attestation: ${findRecentLogs?.data.totalAttestationsSucceeded} ✅ || ${findRecentLogs?.data.totalAttestationsMissed} ❌  `

@@ -31,9 +31,9 @@ export default async function listQueueValidators(ctx: Context, edit = false) {
 
         count++
       }
+      keyboard.text("✖ Close", `close`);
     }
 
-    keyboard.text("✖ Close", `close`);
 
     !edit? await ctx.reply("🎯 Here is your queue validators:", { reply_markup: keyboard }) : await ctx.editMessageText("🎯 Here is your validators:", { reply_markup: keyboard }) 
   } catch (error) {
