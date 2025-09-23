@@ -4,8 +4,11 @@ import { fetchValidatorData } from "../utils/fetchValidator";
 import { formatValidatorMessage } from "../utils/formatValidator";
 import { fetchQueue } from "../utils/fetchQueue";
 import { formatQueue } from "../utils/formatQueue";
+import { fetchEpoch } from "../utils/fetchEpoch";
+import EpochDataManager from "../db/epochManager";
 
 const database = new ValidatorDatabase();
+const epochManager = new EpochDataManager()
 
 export const showValidator = async (ctx: Context) => {
   try {
@@ -14,9 +17,20 @@ export const showValidator = async (ctx: Context) => {
     if(address){
       const data = await fetchValidatorData(address);
       const dataQueue = await fetchQueue(address);
+      const currentEpoch = await fetchEpoch()
 
       if(data){
-        const message = await formatValidatorMessage({currentData: data!, previousData: null}, new Date().toISOString());
+        const message = await formatValidatorMessage(
+          {
+            currentData: data,
+            previousData: null
+          },
+          new Date().toISOString(),
+          {
+            currentEpoch: currentEpoch?.currentEpochMetrics.epochNumber || 0,
+            epochs: await epochManager.searchValidatorByAddress(data.address)
+          },
+        );
         ctx.editMessageText(message, {parse_mode: "Markdown"});
       }else if(dataQueue){
         const message = formatQueue(dataQueue);

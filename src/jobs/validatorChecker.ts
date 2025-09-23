@@ -6,15 +6,18 @@ import { fetchValidatorData } from "../utils/fetchValidator";
 import { fetchEpoch } from "../utils/fetchEpoch";
 import { fethEpochValidator } from "../utils/fetchEpochValidator";
 import { formatEpochValidator } from "../utils/formatEpoch";
+import EpochDataManager from "../db/epochManager";
 
 export function startValidatorChecker(bot: Bot) {
   const database = new ValidatorDatabase();
+  const epochManager = new EpochDataManager()
 
-  cron.schedule("*/10 * * * *", async () => {
+  cron.schedule("*/9 * * * *", async () => {
     console.log("⏰ Running validator status checker at", new Date().toISOString());
     
     try {
       const validators = await database.getValidators();
+      const currentEpoch = await fetchEpoch()
       
       if (validators.length === 0) {
         console.log("📭 No validators registered for monitoring");
@@ -63,7 +66,17 @@ export function startValidatorChecker(bot: Bot) {
             const hasChanged = await database.hasDataChanged(latestLog?.data || null, data);
 
             const validatorData = await database.getValidatorData(validator.address);
-            const message = formatValidatorMessage({currentData: data, previousData: validatorData}, new Date().toISOString());
+            const message = formatValidatorMessage(
+              {
+                currentData: data,
+                previousData: validatorData
+              },
+              new Date().toISOString(),
+              {
+                currentEpoch: currentEpoch?.currentEpochMetrics.epochNumber || 0,
+                epochs: await epochManager.searchValidatorByAddress(data.address)
+              },
+            );
             
             // Always save to database
             await database.addLog(validator.address, validator.chatId, data);
@@ -116,7 +129,7 @@ export function startValidatorChecker(bot: Bot) {
     console.log("🚀 Validator status checker initialized");
   });
 
-  cron.schedule("*/5 * * * *", async () => {
+  cron.schedule("*/4 * * * *", async () => {
     const validators = await database.getValidators();
     const currentEpoch = await fetchEpoch();
 
