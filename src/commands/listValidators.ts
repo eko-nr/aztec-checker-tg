@@ -23,7 +23,7 @@ export default async function listValidators(ctx: Context, edit = false) {
         keyboard.text(message, `show_${address}`);
         keyboard.row()
 
-        keyboard.text(`Balance: ${weiToEther(findRecentLogs.data.balance)}`, "null");
+        keyboard.text(`Balance: ${weiToEther(findRecentLogs.data.balance)} STK`, "null");
 
         let attestation = `Attestation: ${findRecentLogs?.data.totalAttestationsSucceeded} ✅ || ${findRecentLogs?.data.totalAttestationsMissed} ❌  `
         keyboard.text(attestation, "null");
