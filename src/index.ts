@@ -27,7 +27,7 @@ bot.command("show_validators", showValidatorsCommand);
 bot.command("epoch", epochCommand);
 bot.command("get_epoch_validator", getEpochValidatorCommand);
 bot.command("broadcast", broadCastMessageCommand);
-bot.command("list_validator", (ctx) => listValidatorCommand(ctx, false));
+bot.command("list_validator", (ctx) => listValidatorCommand(ctx));
 
 // handler
 bot.on("message:text", messageHandler);
