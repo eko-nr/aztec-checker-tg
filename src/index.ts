@@ -10,6 +10,8 @@ import removeValidatorCommand from "./commands/removeValidators";
 import getEpochValidatorCommand from "./commands/getEpochValidator";
 import { handleBroadcastMessage,  } from "./commands/broadCastMessage";
 import broadCastMessageCommand from "./commands/broadCastMessage";
+import listValidatorsCommand from "./commands/listValidators";
+import callbackHandler from "./handlers/callbackHandler";
 
 const token = process.env.BOT_TOKEN;
 if (!token) throw new Error("BOT_TOKEN not found in environment variables");
@@ -25,12 +27,15 @@ bot.command("show_validators", showValidatorsCommand);
 bot.command("epoch", epochCommand);
 bot.command("get_epoch_validator", getEpochValidatorCommand);
 bot.command("broadcast", broadCastMessageCommand);
+bot.command("list_validators", listValidatorsCommand);
 
-// Message handler
+// handler
 bot.on("message:text", messageHandler);
+bot.on("callback_query:data", callbackHandler);
 
 // Start cronjob (pass bot instance)
 startValidatorChecker(bot);
+
 
 // Start bot
 bot.start();

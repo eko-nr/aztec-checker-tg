@@ -16,12 +16,10 @@ function formatDate(dateString: string): string {
 
 const zone = "Asia/Bangkok"
 
-export function formatQueue(data: ValidatorsResponse, index: number): string {
+export function formatQueue(data: ValidatorsResponse, index?: number): string {
   const { validatorsInQueue, filteredCount, pagination, benchmark } = data;
   
-  let message = `📊 *Validators in Queue Report* (${index+1}) \n\n`;
-
-  message += `🔍 *Validators in Queue:*\n\n`;
+  let message = `📊 *Validator in Queue Report* ${index !== undefined ? `(${index+1})` : ""} \n\n`;
   const batchSize = 32;
   const epochTimeMinute = 20;
   

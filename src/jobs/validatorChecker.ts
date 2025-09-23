@@ -63,7 +63,7 @@ export function startValidatorChecker(bot: Bot) {
             const hasChanged = await database.hasDataChanged(latestLog?.data || null, data);
 
             const validatorData = await database.getValidatorData(validator.address);
-            const message = formatValidatorMessage({currentData: data, previousData: validatorData}, new Date().toISOString(), 0);
+            const message = formatValidatorMessage({currentData: data, previousData: validatorData}, new Date().toISOString());
             
             // Always save to database
             await database.addLog(validator.address, validator.chatId, data);

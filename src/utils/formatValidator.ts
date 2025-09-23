@@ -8,7 +8,7 @@ type DataValidator = {
   previousData: ValidatorData | null;
 }
 
-export function formatValidatorMessage(data: DataValidator, timestamp: string, index: number): string {
+export function formatValidatorMessage(data: DataValidator, timestamp: string, index?: number): string {
   const gmt7Time = moment(timestamp).tz(zone);
 
   // Determine status display
@@ -91,7 +91,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, i
     .map(att => `Slot ${att.slot}: ${att.status === "Success" ? "✅" : "❌"}`)
     .join("\n");
 
-  return `🔍 **Validator ${data.previousData ? "Status Update" : "Status Data"}** ${data.previousData? "" : `(${index+1})`}
+  return `🔍 **Validator ${data.previousData ? "Status Update" : "Status Data"}** ${index !== undefined ? `(${index+1})` : ""}
   
 📍 **Index:** \`${data.currentData.index}\`
 🏆 **Rank:** \`${rankValidatorMsg}\`
