@@ -12,7 +12,7 @@ export function startValidatorChecker(bot: Bot) {
   const database = new ValidatorDatabase();
   const epochManager = new EpochDataManager()
 
-  cron.schedule("*/9 * * * *", async () => {
+  cron.schedule("*/8 * * * *", async () => {
     console.log("⏰ Running validator status checker at", new Date().toISOString());
     
     try {
