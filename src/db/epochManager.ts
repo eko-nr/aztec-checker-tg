@@ -86,7 +86,6 @@ class EpochDataManager {
       try {
         await fs.access(this.databasePath);
       } catch {
-        console.log("first")
         await this.createEmptyDatabase();
       }
     } catch (error) {
