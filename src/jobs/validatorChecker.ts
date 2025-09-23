@@ -58,7 +58,10 @@ export function startValidatorChecker(bot: Bot) {
       // Process results sequentially for database operations and messaging
       for (const result of results) {
         const { validator, data, success, error } = result;
-
+        if(data?.status === "inactive_on_contract"){
+          return
+        }
+        
         try {
           if (success && data) {
             // Get the latest log to compare data
