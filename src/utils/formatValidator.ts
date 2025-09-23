@@ -169,7 +169,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, e
         timeLeftStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
       }
       
-      return `\`• Epoch ${e.epoch} - About ${epochTime.format('YYYY MMM DD, HH:mm [GMT]Z')} - in (${timeLeftStr})\n\``;
+      return `\`• Epoch ${e.epoch} - About ${epochTime.format('YYYY MMM DD, HH:mm [GMT]Z')} - in (${timeLeftStr})\``;
     });
   
   const upcomingEpochsInfo = upcomingEpochs.length > 0 
@@ -196,7 +196,7 @@ ${statusEmoji} **Status:** \`${statusDisplay}\`
 🕒 **Recent Attestations:**
 ${recentAttestationStatus}
 
-📅 **Upcoming Epochs:** \n
+📅 **Upcoming Epochs:**
 ${upcomingEpochsInfo}
 `;
 }
