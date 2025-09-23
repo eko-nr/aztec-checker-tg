@@ -48,6 +48,10 @@ export default async function listValidators(ctx: Context, edit = false) {
       }
     }
 
+
+    keyboard.text("⬅️ Previous", `close`);
+    keyboard.text("➡️ Next", `close`);
+    keyboard.row()
     keyboard.text("✖ Close", `close`);
 
     !edit? await ctx.reply("🎯 Here is your validators:", { reply_markup: keyboard }) : await ctx.editMessageText("🎯 Here is your validators:", { reply_markup: keyboard }) 
