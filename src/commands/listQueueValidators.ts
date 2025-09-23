@@ -33,13 +33,18 @@ export default async function listQueueValidators(ctx: Context, edit = false) {
 
     }
 
-    keyboard.text("⬅️ Previous", `close`);
-    keyboard.text("➡️ Next", `close`);
-    keyboard.row()
+    const isNoValidators = count <= 0;
+
+    if(!isNoValidators){
+      keyboard.text("⬅️ Previous", `close`);
+      keyboard.text("➡️ Next", `close`);
+      keyboard.row()
+    }
+
     keyboard.text("✖ Close", `close`);
 
-
-    !edit? await ctx.reply("🎯 Here is your queue validators:", { reply_markup: keyboard }) : await ctx.editMessageText("🎯 Here is your validators:", { reply_markup: keyboard }) 
+    const message = isNoValidators ? `🎯 No queue validators` : `🎯 Here is your queue validators:`
+    !edit? await ctx.reply(message, { reply_markup: keyboard }) : await ctx.editMessageText("🎯 Here is your validators:", { reply_markup: keyboard }) 
   } catch (error) {
     ctx.reply("❌ Failed to get epoch, try again later")
   }
