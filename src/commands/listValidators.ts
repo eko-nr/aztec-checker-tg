@@ -1,5 +1,6 @@
 import { Context, InlineKeyboard } from "grammy";
 import { ValidatorDatabase } from "../db/validatorDB";
+import { weiToEther } from "../utils/weiToEther";
 
 const database = new ValidatorDatabase();
 
@@ -22,7 +23,7 @@ export default async function listValidators(ctx: Context, edit = false) {
         keyboard.text(message, `show_${address}`);
         keyboard.row()
 
-        keyboard.text(`Balance: ${findRecentLogs.data.balance}`, "null");
+        keyboard.text(`Balance: ${weiToEther(findRecentLogs.data.balance)}`, "null");
 
         let attestation = `Attestation: ${findRecentLogs?.data.totalAttestationsSucceeded} ✅ || ${findRecentLogs?.data.totalAttestationsMissed} ❌  `
         keyboard.text(attestation, "null");
