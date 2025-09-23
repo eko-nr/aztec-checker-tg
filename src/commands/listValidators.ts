@@ -29,10 +29,10 @@ export default async function listValidators(ctx: Context, edit = false) {
         keyboard.text(`Unclaimed Rewards: ${weiToEther(findRecentLogs.data.unclaimedRewards)} STK`, "null")
         keyboard.row();
 
-        let attestation = `Attestation: ${findRecentLogs?.data.totalAttestationsSucceeded} ✅ || ${findRecentLogs?.data.totalAttestationsMissed} ❌  `
+        let attestation = `Attestation: ${findRecentLogs?.data.totalAttestationsSucceeded} ✅  / ${findRecentLogs?.data.totalAttestationsMissed} ❌  `
         keyboard.text(attestation, "null");
         
-        const block = `Block: ${findRecentLogs.data.totalBlocksMined + findRecentLogs.data.totalBlocksProposed} ✅|| ${findRecentLogs.data.totalBlocksMissed} ❌`
+        const block = `Block: ${findRecentLogs.data.totalBlocksMined + findRecentLogs.data.totalBlocksProposed} ✅ / ${findRecentLogs.data.totalBlocksMissed} ❌`
         keyboard.text(block, "null");
         keyboard.row()
         
