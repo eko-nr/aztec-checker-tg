@@ -6,6 +6,10 @@ const database = new ValidatorDatabase();
 const evmRegex = /^0x[a-fA-F0-9]{40}$/;
  
 export default async function removeValidator(ctx: Context) {
+  setTimeout(() => {
+    ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!);
+  }, 5000);
+
   const text = ctx.message?.text || "";
   const parts = text.split(" ");
 

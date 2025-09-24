@@ -13,4 +13,7 @@ I'll quietly watch your validators in the background and only pop up if somethin
 
 My data is refreshed every 10 minutes. Ready to start? Use /add_validator to add your first validator!
 `);
+  setTimeout(() => {
+    ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!);
+  }, 5000);
 }

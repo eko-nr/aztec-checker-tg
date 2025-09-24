@@ -8,6 +8,10 @@ const database = new ValidatorDatabase();
 
 export default async function getEpochValidator(ctx: Context) {
   try {
+    setTimeout(() => {
+      ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!);
+    }, 5000);
+
     const validators = await database.getChatValidators(ctx.chatId!);
     const currentEpoch = await fetchEpoch();
     let countValidator = 0;
