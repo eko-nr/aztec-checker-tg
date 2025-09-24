@@ -18,7 +18,7 @@ export const showValidator = async (ctx: Context) => {
       const wait = await ctx.reply("🫣 Just a moment...");
       setTimeout(() => {
         ctx.api.deleteMessage(wait.chat.id, wait.message_id);
-      }, 2500);
+      }, 3500);
 
       const data = await fetchValidatorData(address);
       const dataQueue = await fetchQueue(address);
