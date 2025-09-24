@@ -8,7 +8,7 @@ export default async function listQueueValidatorsService(ctx: Context, edit = fa
   const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length);
   const pagination = ctx.callbackQuery?.data?.split("_page_");
   const startFrom = Number(pagination?.[1]) || 0 as number;
-  const dataPerPage = 5;
+  const dataPerPage = 15;
   
   try {
     const keyboard = new InlineKeyboard()
