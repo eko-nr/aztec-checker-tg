@@ -98,13 +98,17 @@ export function startValidatorChecker(bot: Bot) {
             
           } else if (!success) {
             // Send error notification
-            await bot.api.sendMessage(
+            const msg = await bot.api.sendMessage(
               validator.chatId,
               `⚠️ **Processing Error**\n\n` +
               `Error occurred while processing validator \`${validator.address}\`.\n` +
               `Will retry in the next cycle.`,
               { parse_mode: "Markdown" }
             );
+
+            setTimeout(() => {
+              bot.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+            }, 15000);
           }
 
           // Optional: Add small delay between message sends to avoid rate limiting
@@ -114,13 +118,17 @@ export function startValidatorChecker(bot: Bot) {
           console.error(`💥 Error processing result for validator ${validator.address}:`, processingError);
           
           try {
-            await bot.api.sendMessage(
+            const msg = await bot.api.sendMessage(
               validator.chatId,
               `⚠️ **Processing Error**\n\n` +
               `Error occurred while processing validator \`${validator.address}\`.\n` +
               `Will retry in the next cycle.`,
               { parse_mode: "Markdown" }
             );
+
+            setTimeout(() => {
+              bot.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+            }, 15000);
           } catch (sendError) {
             console.error(`Failed to send error notification to chat ${validator.chatId}:`, sendError);
           }
