@@ -1,9 +1,9 @@
 import { Context } from "grammy";
-import { showValidator } from "../services/showValidator";
-import { deleteValidator } from "../services/deleteValidator";
-import { deleteMessage } from "../services/deleteMessage";
-import listValidators from "../commands/listValidators";
-import listQueueValidators from "../commands/listQueueValidators";
+import { showValidator } from "../services/showValidatorService";
+import { deleteValidator } from "../services/deleteValidatorService";
+import { deleteMessage } from "../services/deleteMessageService";
+import listValidatorsService from "../services/listValidatorsService";
+import listQueueValidatorsService from "../services/listQueueValidatorsService";
 
 export default async function callbackHandler(ctx: Context) {
   const data = ctx.callbackQuery?.data;
@@ -13,9 +13,9 @@ export default async function callbackHandler(ctx: Context) {
   }else if(data?.includes("del")){
     deleteValidator(ctx);
   }else if(data?.includes("list_validator")){
-    listValidators(ctx, true)
+    listValidatorsService(ctx, true)
   }else if(data?.includes("list_queue_validator")){
-    listQueueValidators(ctx, true)
+    listQueueValidatorsService(ctx, true)
   }else if(data?.includes("close")){
     deleteMessage(ctx)
   }

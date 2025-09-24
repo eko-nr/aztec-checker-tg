@@ -28,8 +28,8 @@ bot.command("show_validators", showValidatorsCommand);
 bot.command("epoch", epochCommand);
 bot.command("get_epoch_validator", getEpochValidatorCommand);
 bot.command("broadcast", broadCastMessageCommand);
-bot.command("list_validators", (ctx) => listValidatorsCommand(ctx));
-bot.command("list_queue_validators", (ctx) => listQueueValidatorsCommand(ctx));
+bot.command("list_validators", listValidatorsCommand);
+bot.command("list_queue_validators", listQueueValidatorsCommand);
 
 // handler
 bot.on("message:text", messageHandler);
