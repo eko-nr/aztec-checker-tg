@@ -44,6 +44,10 @@ export default async function getEpochValidator(ctx: Context) {
 
   } catch (error) {
     console.log(error)
-    ctx.reply("❌ Failed to get epoch validator, try again later")
+    const msg = await ctx.reply("❌ Failed to get epoch validator, try again later");
+
+    setTimeout(() => {
+      ctx.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+    }, 5000);
   }
 }

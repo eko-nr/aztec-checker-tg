@@ -9,6 +9,9 @@ export default async function epoch(ctx: Context) {
 
     await showEpochService(ctx)
   } catch (error) {
-    ctx.reply("❌ Failed to get epoch, try again later")
+    const msg = await ctx.reply("❌ Failed to get epoch, try again later");
+    setTimeout(() => {
+      ctx.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+    }, 5000);
   }
 }

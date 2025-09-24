@@ -42,7 +42,7 @@ export const showValidator = async (ctx: Context) => {
           if (msg !== true && msg.chat && msg.message_id) {
             ctx.api.deleteMessage(msg.chat.id, msg.message_id);
           }
-        }, 50000);
+        }, 30000);
       }else if(dataQueue){
         const message = formatQueue(dataQueue);
         const msg = await ctx.editMessageText(message, {
@@ -53,7 +53,7 @@ export const showValidator = async (ctx: Context) => {
           if (msg !== true && msg.chat && msg.message_id) {
             ctx.api.deleteMessage(msg.chat.id, msg.message_id);
           }
-        }, 50000);
+        }, 30000);
       }
     }
 

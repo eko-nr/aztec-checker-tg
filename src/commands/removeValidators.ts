@@ -14,19 +14,32 @@ export default async function removeValidator(ctx: Context) {
   const parts = text.split(" ");
 
   if (parts.length < 2) {
-    return ctx.reply("⚠️ Wrong format.\nExample: `/remove_validator 0x1234...`", {
+    const msg = await ctx.reply("⚠️ Wrong format.\nExample: `/remove_validator 0x1234...`", {
       parse_mode: "Markdown",
     });
+
+    setTimeout(() => {
+      ctx.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+    }, 5000);
+
+    return
   }
 
   const address = parts[1];
 
   if (!evmRegex.test(address)) {
-    return ctx.reply("❌ Invalid address. Must be in EVM format (0x + 40 hex chars).");
+    const msg = await ctx.reply("❌ Invalid address. Must be in EVM format (0x + 40 hex chars).");
+    setTimeout(() => {
+      ctx.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+    }, 5000);
+    return
   }
 
   database.removeValidator(address, ctx.chatId!);
 
-  await ctx.reply("✅ Validator deleted from watchlist")
+  const msg = await ctx.reply("✅ Validator deleted from watchlist");
+  setTimeout(() => {
+    ctx.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+  }, 5000);
   
 }
