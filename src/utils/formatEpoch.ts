@@ -14,7 +14,7 @@ export const formatEpoch = (data: ValidatorStats) => {
 🔥 **Validator Network Pulse 🔥**  
 *(Epoch ${data.currentEpochMetrics.epochNumber} Update)*  
 
-🔜 **Next Epoch In:** ${duration.humanize()} ${duration.seconds()} seconds
+🔜 **Next Epoch In:** ${duration.minutes()} minutes ${duration.seconds()} seconds
 
 🌐 **Active Validators:** ${data.totalActiveValidators} 🚀  
 👋 **Exiting Validators:** ${data.totalExitingValidators} *(Keeping an eye on this!)*  
