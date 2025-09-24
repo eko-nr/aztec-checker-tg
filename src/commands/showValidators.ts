@@ -57,9 +57,13 @@ export default async function showValidators(ctx: Context) {
       countValidator
     );
 
-    await ctx.reply(message, {
+    const msg = await ctx.reply(message, {
       parse_mode: "Markdown"
     });
+
+    setTimeout(() => {
+      ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
+    }, 240000);
 
     if(cachedData.status !== "Validating"){
       countInactive++;
@@ -112,9 +116,13 @@ export default async function showValidators(ctx: Context) {
           );
           await database.addLog(validator.address, ctx.chatId!, data);
           
-          await ctx.reply(message, {
+          const msg = await ctx.reply(message, {
             parse_mode: "Markdown"
           });
+
+          setTimeout(() => {
+            ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
+          }, 240000);
 
           if(data.status !== "Validating"){
             countInactive++;
@@ -135,19 +143,26 @@ export default async function showValidators(ctx: Context) {
 
               countQueue++;
             } else {
-              await ctx.reply(
+              const msg = await ctx.reply(
                 `❌ Could'nt get data validator \`${validator.address}\``,
                 { parse_mode: "Markdown" }
               );
 
+              setTimeout(() => {
+                ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
+              }, 240000);
               countInactive++;
             }
             
           } catch (queueError) {
-            await ctx.reply(
+            const msg = await ctx.reply(
               `❌ Could'nt get data validator \`${validator.address}\``,
               { parse_mode: "Markdown" }
             );
+
+            setTimeout(() => {
+              ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
+            }, 5000);
 
             countInactive++;
           }
@@ -157,11 +172,15 @@ export default async function showValidators(ctx: Context) {
         await new Promise(resolve => setTimeout(resolve, 100));
 
       } catch (processingError) {
-        await ctx.reply(
+        const msg = await ctx.reply(
           `❌ **API Error**\n\n` +
           `${typeof processingError === "string" ? processingError : JSON.stringify(processingError)}`,
           { parse_mode: "Markdown" }
         );
+
+        setTimeout(() => {
+          ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
+        }, 5000);
       }
     }
   }
@@ -174,10 +193,14 @@ export default async function showValidators(ctx: Context) {
         totalValidators: validators.length
       });
 
-      await ctx.reply(
+      const msg = await ctx.reply(
         messageSummary,
         { parse_mode: "Markdown" }
       );
+
+      setTimeout(() => {
+        ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
+      }, 240000);
     } catch (error) {
       
     }

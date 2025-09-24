@@ -36,12 +36,20 @@ export const showValidator = async (ctx: Context) => {
             epochs: await epochManager.searchValidatorByAddress(data.address)
           },
         );
-        ctx.editMessageText(message, {parse_mode: "Markdown"});
+        const msg = await ctx.editMessageText(message, {parse_mode: "Markdown"});
+
+        setTimeout(() => {
+          ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!)
+        }, 120000);
       }else if(dataQueue){
         const message = formatQueue(dataQueue);
         await ctx.editMessageText(message, {
           parse_mode: "Markdown"
         });
+
+        setTimeout(() => {
+          ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!)
+        }, 120000);
       }else{
 
       }
