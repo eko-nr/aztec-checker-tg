@@ -87,9 +87,13 @@ export function startValidatorChecker(bot: Bot) {
             // Only send message if data has changed
             if (hasChanged) {
               
-              await bot.api.sendMessage(validator.chatId, message, {
+              const msg = await bot.api.sendMessage(validator.chatId, message, {
                 parse_mode: "Markdown"
               });
+
+              setTimeout(() => {
+                bot.api.deleteMessage(msg.chat.id, msg.message_id)
+              }, 86400000);
             }
             
           } else if (!success) {
@@ -132,7 +136,7 @@ export function startValidatorChecker(bot: Bot) {
     console.log("🚀 Validator status checker initialized");
   });
 
-  cron.schedule("*/3 * * * *", async () => {
+  cron.schedule("*/4 * * * *", async () => {
     const validators = await database.getValidators();
     const currentEpoch = await fetchEpoch();
 
@@ -142,7 +146,10 @@ export function startValidatorChecker(bot: Bot) {
         for (const validator of validators) {
           const message = formatEpochValidator(epochValidator, validator.address);
           if(message){
-             await bot.api.sendMessage(validator.chatId, message, {parse_mode: "Markdown"});
+            const msg = await bot.api.sendMessage(validator.chatId, message, {parse_mode: "Markdown"});
+            setTimeout(() => {
+              bot.api.deleteMessage(msg.chat.id, msg.message_id)
+            }, 86400000);
           }
         }
       }

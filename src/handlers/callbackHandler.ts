@@ -4,6 +4,7 @@ import { deleteValidator } from "../services/deleteValidatorService";
 import { deleteMessage } from "../services/deleteMessageService";
 import listValidatorsService from "../services/listValidatorsService";
 import listQueueValidatorsService from "../services/listQueueValidatorsService";
+import showEpochService from "../services/showEpochService";
 
 export default async function callbackHandler(ctx: Context) {
   const data = ctx.callbackQuery?.data;
@@ -16,6 +17,8 @@ export default async function callbackHandler(ctx: Context) {
     listValidatorsService(ctx, true)
   }else if(data?.includes("list_queue_validator")){
     listQueueValidatorsService(ctx, true)
+  }else if(data?.includes("epoch")){
+    showEpochService(ctx, true)
   }else if(data?.includes("close")){
     deleteMessage(ctx)
   }

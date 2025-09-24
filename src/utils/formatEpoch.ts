@@ -1,10 +1,20 @@
 import { ValidatorStats } from "./fetchEpoch";
 import { EpochValidator } from "./fetchEpochValidator";
+import { getNextEpochDate } from "./getNextEpoch";
+import moment from 'moment-timezone'
 
 export const formatEpoch = (data: ValidatorStats) => {
+  const nextEpoch = getNextEpochDate();
+  const now = moment.tz("Asia/Jakarta");
+
+  const diffMs = nextEpoch.diff(now);
+  const duration = moment.duration(diffMs);
+
   return `
 🔥 **Validator Network Pulse 🔥**  
 *(Epoch ${data.currentEpochMetrics.epochNumber} Update)*  
+
+🔜 **Next Epoch In:** ${duration.humanize()} ${duration.seconds()} seconds
 
 🌐 **Active Validators:** ${data.totalActiveValidators} 🚀  
 👋 **Exiting Validators:** ${data.totalExitingValidators} *(Keeping an eye on this!)*  
