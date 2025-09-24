@@ -137,9 +137,13 @@ export default async function showValidators(ctx: Context) {
             
             if (dataQueue && dataQueue.validatorsInQueue.length > 0) {
               const message = formatQueue(dataQueue, countQueue);
-              await ctx.reply(message, {
+              const msg = await ctx.reply(message, {
                 parse_mode: "Markdown"
               });
+              
+              setTimeout(() => {
+                ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
+              }, 240000);
 
               countQueue++;
             } else {
@@ -150,7 +154,7 @@ export default async function showValidators(ctx: Context) {
 
               setTimeout(() => {
                 ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
-              }, 240000);
+              }, 5000);
               countInactive++;
             }
             
