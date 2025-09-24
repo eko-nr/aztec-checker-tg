@@ -1,7 +1,7 @@
 import moment, { Moment } from "moment-timezone";
 
 const timezone = "Asia/Jakarta";
-const EPOCH_START: Moment = moment.tz("2025-09-24 09:40:42", timezone).utc();
+const EPOCH_START: Moment = moment.tz("2025-09-24 09:40:38", timezone).utc();
 const EPOCH_LENGTH = 1152 * 1000; // 19 menit 12 detik (ms)
 
 export function getNextEpochDate(): Moment {
