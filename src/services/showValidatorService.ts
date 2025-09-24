@@ -13,7 +13,7 @@ const epochManager = new EpochDataManager()
 export const showValidator = async (ctx: Context) => {
   try {
     const address = ctx.callbackQuery?.data?.split("_")?.[1];
-    
+
     if(address){
       const wait = await ctx.reply("🫣 Just a moment...");
       setTimeout(() => {
@@ -39,19 +39,21 @@ export const showValidator = async (ctx: Context) => {
         const msg = await ctx.editMessageText(message, {parse_mode: "Markdown"});
 
         setTimeout(() => {
-          ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!)
+          if (msg !== true && msg.chat && msg.message_id) {
+            ctx.api.deleteMessage(msg.chat.id, msg.message_id);
+          }
         }, 120000);
       }else if(dataQueue){
         const message = formatQueue(dataQueue);
-        await ctx.editMessageText(message, {
+        const msg = await ctx.editMessageText(message, {
           parse_mode: "Markdown"
         });
 
         setTimeout(() => {
-          ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!)
+          if (msg !== true && msg.chat && msg.message_id) {
+            ctx.api.deleteMessage(msg.chat.id, msg.message_id);
+          }
         }, 120000);
-      }else{
-
       }
     }
 
