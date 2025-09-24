@@ -1,6 +1,6 @@
 import { ValidatorStats } from "./fetchEpoch";
 import { EpochValidator } from "./fetchEpochValidator";
-import { getNextEpochDate } from "./getNextEpoch";
+import { getNextEpochDate } from "./getEpochTime";
 import moment from 'moment-timezone'
 
 export const formatEpoch = (data: ValidatorStats) => {

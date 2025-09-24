@@ -1,5 +1,6 @@
 import { ValidatorData } from "../db/validatorDB";
 import moment from 'moment-timezone'
+import { epochTimePassed } from "./getEpochTime";
 
 const zone = "Asia/Bangkok"
 const EPOCH_DURATION_MINUTES = 19.2; // 19 minutes 12 seconds
@@ -74,6 +75,16 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, e
 
   const currentUnclaimedRewardsInSTK = (parseFloat(data.currentData.unclaimedRewards) / 1e18).toFixed(6);
   const currentBalanceInSTK = (parseFloat(data.currentData.balance) / 1e18).toFixed(4);
+
+  const lastEpochBlock = data.currentData.proposalHistory.reduce(
+    (prev, curr) => curr.epoch > prev.epoch ? curr : prev,
+    { epoch: -Infinity, slot: 0, status: "" }
+  );
+
+  const lastEpochAttestation = data.currentData.recentAttestations.reduce(
+    (prev, curr) => curr.epoch > prev.epoch ? curr : prev,
+    { epoch: -Infinity, slot: 0, status: "" }
+  );
 
   let rankValidatorMsg = ""
   let balanceStkMsg = ""
@@ -188,6 +199,8 @@ ${statusEmoji} **Status:** \`${statusDisplay}\`
 🕓 **Activation Date:** \`${moment(data.currentData.activationDate).toLocaleString()}\`
 
 📈 **Performance:**
+• Last Attestation: \`${lastEpochAttestation.epoch > 0 ? epochTimePassed(epoch.currentEpoch, lastEpochAttestation.epoch) : "N/A"}\`
+• Last Proposal: \`${lastEpochBlock.epoch > 0 ? epochTimePassed(epoch.currentEpoch, lastEpochBlock.epoch) : "N/A"}\`
 • Total Attestations: \`${totalAttestationMsg.success} ✅ / ${totalAttestationMsg.missed} ❌\`
 • Blocks Prosal or Mined: \`${totalBlockProposalMsg.success} ✅ / ${totalBlockProposalMsg.failed} ❌\`
 • Participating Epochs: \`${totalParticipatingEpochs}\`
