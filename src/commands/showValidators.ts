@@ -67,7 +67,7 @@ export default async function showValidators(ctx: Context) {
 
     setTimeout(() => {
       ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
-    }, 120000);
+    }, 80000);
 
     if(cachedData.status !== "Validating"){
       countInactive++;
@@ -126,7 +126,7 @@ export default async function showValidators(ctx: Context) {
 
           setTimeout(() => {
             ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
-          }, 120000);
+          }, 80000);
 
           if(data.status !== "Validating"){
             countInactive++;
@@ -147,7 +147,7 @@ export default async function showValidators(ctx: Context) {
               
               setTimeout(() => {
                 ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
-              }, 120000);
+              }, 80000);
 
               countQueue++;
             } else {
@@ -208,7 +208,7 @@ export default async function showValidators(ctx: Context) {
 
       setTimeout(() => {
         ctx.api.deleteMessage(msg.chat?.id, msg.message_id)
-      }, 120000);
+      }, 80000);
     } catch (error) {
       
     }
