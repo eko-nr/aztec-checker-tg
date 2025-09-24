@@ -21,8 +21,13 @@ export default async function getEpochValidator(ctx: Context) {
       if(epochValidator){
         for (const validator of validators) {
           const message = formatEpochValidator(epochValidator, validator.address);
+
+          
           if(message){
-            await ctx.reply(message, {parse_mode: "Markdown"});
+            const msg = await ctx.reply(message, {parse_mode: "Markdown"});
+            setTimeout(() => {
+              ctx.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+            }, 60000);
 
             countValidator++;
           }
@@ -31,7 +36,10 @@ export default async function getEpochValidator(ctx: Context) {
     }
 
     if(countValidator <= 0){
-      ctx.reply("Your validators has no epoch.")
+      const msg = await ctx.reply("Your validators has no epoch.")
+      setTimeout(() => {
+        ctx.api.deleteMessage(msg.chat?.id!, msg.message_id!);
+      }, 6000);
     }
 
   } catch (error) {
