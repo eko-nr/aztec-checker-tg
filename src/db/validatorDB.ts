@@ -148,8 +148,19 @@ export class ValidatorDatabase {
       .map(v => ({ address: v.address, addedAt: v.addedAt }));
   }
 
-  async addLog(address: string, chatId: number, data: ValidatorData): Promise<void> {
+  async addLog(address: string, chatId: number, data: ValidatorData): Promise<boolean> {
     const db = await this.loadDatabase();
+    
+    // Get the latest log for this validator and chat to compare data
+    const latestLog = db.logs
+      .filter(log => log.address === address && log.chatId === chatId)
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
+    
+    // Check if data has changed using existing hasDataChanged method
+    if (!this.hasDataChanged(latestLog?.data || null, data)) {
+      // Data hasn't changed, don't add new log
+      return false;
+    }
     
     const log: ValidatorLog = {
       address,
@@ -173,6 +184,7 @@ export class ValidatorDatabase {
     }
 
     await this.saveDatabase(db);
+    return true; // Log was added
   }
 
   async getRecentLogs(address: string, limit: number = 10): Promise<ValidatorLog[]> {
@@ -199,11 +211,13 @@ export class ValidatorDatabase {
   }
 
   // Check if validator data has changed significantly
-  hasDataChanged(oldData: ValidatorData | null, newData: ValidatorData): boolean {
+  hasDataChanged(oldData: ValidatorData | null, newData: ValidatorData, isCheckRank = true): boolean {
     if (!oldData) return true; // First time checking, always send
 
     // Compare key fields that matter for notifications
     return (
+      (isCheckRank && oldData.rank !== newData.rank) ||
+      oldData.status !== newData.status || 
       oldData.status !== newData.status ||
       oldData.balance !== newData.balance ||
       oldData.attestationSuccess !== newData.attestationSuccess ||
@@ -328,5 +342,69 @@ export class ValidatorDatabase {
       totalCleared: initialLogCount - db.logs.length,
       keptLogs
     };
+  }
+
+  /**
+   * Get epoch performance history for a validator
+   * @param address Validator address
+   * @param epochFrom Optional epoch number to filter from
+   * @param epochTo Optional epoch number to filter to
+   * @returns Array of epoch performance data
+   */
+  async getEpochPerformanceHistory(
+    address: string, 
+    epochFrom?: number, 
+    epochTo?: number
+  ): Promise<Array<{
+    epochNumber: number;
+    attestationsSuccessful: number;
+    attestationsMissed: number;
+    blocksProposed: number;
+    blocksMined: number;
+    blocksMissed: number;
+  }>> {
+    const validatorData = await this.getValidatorData(address);
+    if (!validatorData || !validatorData.epochPerformanceHistory) {
+      return [];
+    }
+
+    let history = validatorData.epochPerformanceHistory;
+
+    // Filter by epoch range if provided
+    if (epochFrom !== undefined || epochTo !== undefined) {
+      history = history.filter(epoch => {
+        const fromCheck = epochFrom !== undefined ? epoch.epochNumber >= epochFrom : true;
+        const toCheck = epochTo !== undefined ? epoch.epochNumber <= epochTo : true;
+        return fromCheck && toCheck;
+      });
+    }
+
+    // Sort by epoch number (newest first)
+    return history.sort((a, b) => b.epochNumber - a.epochNumber);
+  }
+
+  /**
+   * Get the latest epoch performance record for a validator
+   * @param address Validator address
+   * @returns Latest epoch performance data or null if not found
+   */
+  async getLatestPerformanceHistory(address: string): Promise<{
+    epochNumber: number;
+    attestationsSuccessful: number;
+    attestationsMissed: number;
+    blocksProposed: number;
+    blocksMined: number;
+    blocksMissed: number;
+  } | null> {
+    const validatorData = await this.getValidatorData(address);
+    if (!validatorData || !validatorData.epochPerformanceHistory || validatorData.epochPerformanceHistory.length === 0) {
+      return null;
+    }
+
+    // Sort by epoch number and return the most recent one
+    const sortedHistory = validatorData.epochPerformanceHistory
+      .sort((a, b) => b.epochNumber - a.epochNumber);
+    
+    return sortedHistory[0];
   }
 }

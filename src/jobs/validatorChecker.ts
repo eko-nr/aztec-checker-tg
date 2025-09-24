@@ -12,7 +12,7 @@ export function startValidatorChecker(bot: Bot) {
   const database = new ValidatorDatabase();
   const epochManager = new EpochDataManager()
 
-  cron.schedule("*/8 * * * *", async () => {
+  cron.schedule("*/9 * * * *", async () => {
     console.log("⏰ Running validator status checker at", new Date().toISOString());
     
     try {
@@ -66,7 +66,7 @@ export function startValidatorChecker(bot: Bot) {
           if (success && data) {
             // Get the latest log to compare data
             const latestLog = await database.getLatestLog(validator.address);
-            const hasChanged = await database.hasDataChanged(latestLog?.data || null, data);
+            const hasChanged = await database.hasDataChanged(latestLog?.data || null, data, false);
 
             const validatorData = await database.getValidatorData(validator.address);
             const message = formatValidatorMessage(

@@ -21,7 +21,7 @@ export function formatQueue(data: ValidatorsResponse, index?: number): string {
   
   let message = `📊 *Validator in Queue Report* ${index !== undefined ? `(${index+1})` : ""} \n\n`;
   const batchSize = 32;
-  const epochTimeMinute = 20;
+  const epochTimeMinute = 19.2;
   
   validatorsInQueue.forEach((validator, index) => {
     const batchQueue = Math.ceil(validator.position / batchSize);

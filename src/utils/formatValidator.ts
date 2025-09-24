@@ -2,7 +2,7 @@ import { ValidatorData } from "../db/validatorDB";
 import moment from 'moment-timezone'
 
 const zone = "Asia/Bangkok"
-const EPOCH_DURATION_MINUTES = 20; // 20 minutes per epoch
+const EPOCH_DURATION_MINUTES = 19.2; // 19 minutes 12 seconds
 
 type DataValidator = {
   currentData: ValidatorData;
@@ -62,7 +62,6 @@ function findNextValidatorEpoch(currentEpoch: number, epochs: Epoch['epochs']): 
 }
 
 export function formatValidatorMessage(data: DataValidator, timestamp: string, epoch: Epoch, index?: number): string {
-  const gmt7Time = moment(timestamp).tz(zone);
 
   // Determine status display
   const statusDisplay = data.currentData.status === "Validating" ? "Active" : data.currentData.status;
