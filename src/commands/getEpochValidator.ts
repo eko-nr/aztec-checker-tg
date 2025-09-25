@@ -27,7 +27,7 @@ export default async function getEpochValidator(ctx: Context) {
             const msg = await ctx.reply(message, {parse_mode: "Markdown"});
             setTimeout(() => {
               ctx.api.deleteMessage(msg.chat?.id!, msg.message_id!);
-            }, 60000);
+            }, 10000);
 
             countValidator++;
           }
