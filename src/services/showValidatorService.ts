@@ -1,4 +1,4 @@
-import { Context } from "grammy";
+import { Context, InlineKeyboard } from "grammy";
 import { ValidatorDatabase } from "../db/validatorDB";
 import { fetchValidatorData } from "../utils/fetchValidator";
 import { formatValidatorMessage } from "../utils/formatValidator";
@@ -25,6 +25,10 @@ export const showValidator = async (ctx: Context) => {
       const currentEpoch = await fetchEpoch();
 
       if(data){
+        const keyboard = new InlineKeyboard();
+        keyboard.text("✖ Close", "close")
+        keyboard.text("🔙 Back", `list_validator`);
+
         const message = await formatValidatorMessage(
           {
             currentData: data,
@@ -36,24 +40,24 @@ export const showValidator = async (ctx: Context) => {
             epochs: await epochManager.searchValidatorByAddress(data.address)
           },
         );
-        const msg = await ctx.editMessageText(message, {parse_mode: "Markdown"});
-
-        setTimeout(() => {
-          if (msg !== true && msg.chat && msg.message_id) {
-            ctx.api.deleteMessage(msg.chat.id, msg.message_id);
+        const msg = await ctx.editMessageText(
+          message,
+          {
+            parse_mode: "Markdown",
+            reply_markup: keyboard
           }
-        }, 30000);
+        );
       }else if(dataQueue){
         const message = formatQueue(dataQueue);
-        const msg = await ctx.editMessageText(message, {
-          parse_mode: "Markdown"
-        });
+        const keyboard = new InlineKeyboard();
 
-        setTimeout(() => {
-          if (msg !== true && msg.chat && msg.message_id) {
-            ctx.api.deleteMessage(msg.chat.id, msg.message_id);
-          }
-        }, 30000);
+        keyboard.text("✖ Close", "close")
+        keyboard.text("🔙 Back", `list_queue_validator`);
+
+        const msg = await ctx.editMessageText(message, {
+          parse_mode: "Markdown",
+          reply_markup: keyboard
+        });
       }
     }
 

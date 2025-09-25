@@ -11,9 +11,9 @@ export const deleteValidator = async(ctx: Context) => {
     const address = data?.split("_")?.[1]
 
     if(isConfirmed){
-      const addrConfrimed = data?.split("_")?.[2]
-      if(addrConfrimed){
-        database.removeValidator(addrConfrimed, ctx.chatId!);
+      const addrConfirmed = data?.split("_")?.[2]
+      if(addrConfirmed){
+        database.removeValidator(addrConfirmed, ctx.chatId!);
   
         await ctx.editMessageText("✅ Validator deleted from watchlist")
       }else{

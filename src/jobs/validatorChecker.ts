@@ -1,4 +1,4 @@
-import { Bot } from "grammy";
+import { Bot, InlineKeyboard } from "grammy";
 import cron from "node-cron";
 import { ValidatorDatabase } from "../db/validatorDB";
 import { formatValidatorMessage } from "../utils/formatValidator";
@@ -87,13 +87,13 @@ export function startValidatorChecker(bot: Bot) {
             // Only send message if data has changed
             if (hasChanged) {
               
-              const msg = await bot.api.sendMessage(validator.chatId, message, {
-                parse_mode: "Markdown"
-              });
+              const keyboard = new InlineKeyboard();
+              keyboard.text("✖ Close", "close")
 
-              setTimeout(() => {
-                bot.api.deleteMessage(msg.chat.id, msg.message_id)
-              }, 86400000);
+              const msg = await bot.api.sendMessage(validator.chatId, message, {
+                parse_mode: "Markdown",
+                reply_markup: keyboard
+              });
             }
             
           } else if (!success) {
@@ -154,10 +154,17 @@ export function startValidatorChecker(bot: Bot) {
         for (const validator of validators) {
           const message = formatEpochValidator(epochValidator, validator.address);
           if(message){
-            const msg = await bot.api.sendMessage(validator.chatId, message, {parse_mode: "Markdown"});
-            setTimeout(() => {
-              bot.api.deleteMessage(msg.chat.id, msg.message_id)
-            }, 86400000);
+            const keyboard = new InlineKeyboard();
+            keyboard.text("✖ Close", "close")
+
+            const msg = await bot.api.sendMessage(
+              validator.chatId,
+              message,
+              {
+                parse_mode: "Markdown",
+                reply_markup: keyboard
+              }
+            );
           }
         }
       }
