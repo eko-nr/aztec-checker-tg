@@ -26,6 +26,7 @@ function getRealtimeCurrentEpochStart(): Moment {
 
 export function epochTimePassed(currentEpoch: number, oldEpoch: number): string {
   const currentRealtimeStartUTC = getRealtimeCurrentEpochStart();
+  const now = moment().tz(timezone);
 
   const labelDelta = oldEpoch - currentEpoch; 
   const oldEpochStartJakarta = currentRealtimeStartUTC
@@ -33,5 +34,9 @@ export function epochTimePassed(currentEpoch: number, oldEpoch: number): string 
     .add(labelDelta * EPOCH_LENGTH, "ms")
     .tz(timezone);
 
-  return `${oldEpochStartJakarta.format('YYYY MMM DD, HH:mm [GMT]ZZ')}`
+  const duration = moment.duration(now.diff(oldEpochStartJakarta))
+  const days = duration.days();
+  const hours = duration.hours();
+
+  return `${oldEpochStartJakarta.format('YYYY MMM DD, HH:mm [GMT]ZZ')} (${days} days ${hours} hours ago)`
 }
