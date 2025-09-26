@@ -70,7 +70,7 @@ export default async function listValidatorsService(ctx: Context, edit = false) 
             keyboard.row();
 
             keyboard.text(`Balance: ${weiToEther(findRecentLogs.data.balance)} STK`, "null");
-            keyboard.text(`Unclaimed: ${weiToEther(findRecentLogs.data.unclaimedRewards)} STK`, "null");
+            keyboard.text(`Rewards: ${weiToEther(findRecentLogs.data.unclaimedRewards)} STK`, "null");
             keyboard.row();
 
             let attestation = `Attestation: ${findRecentLogs?.data.totalAttestationsSucceeded} ✅  / ${findRecentLogs?.data.totalAttestationsMissed} ❌  `;
