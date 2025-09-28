@@ -7,7 +7,8 @@ export const deleteMessage = async (ctx: Context) => {
   try {
     const cbData = ctx.callbackQuery?.data;
     const isCloseAll = cbData?.split("_")?.[1] === "all";
-
+    await ctx.deleteMessage()
+    
     if(isCloseAll){
       const chats = await messageManager.getChatMessages(ctx.chat?.id!);
       
@@ -23,8 +24,6 @@ export const deleteMessage = async (ctx: Context) => {
           console.log('error delete messages: ', ctx.chat?.id!, "id: ", chat.message_id);
         }
       }
-    }else{
-      await ctx.deleteMessage()
     }
 
   } catch (error) {
