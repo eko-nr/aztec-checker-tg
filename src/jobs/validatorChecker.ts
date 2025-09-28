@@ -171,7 +171,7 @@ export async function startValidatorChecker(bot: Bot) {
               }
             );
 
-             messageManager.addMessage(validator.chatId, msg.message_id, "EPOCH_REPORT")
+            messageManager.addMessage(validator.chatId, msg.message_id, "EPOCH_REPORT")
           }
         }
       }

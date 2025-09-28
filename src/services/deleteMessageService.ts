@@ -14,6 +14,8 @@ export const deleteMessage = async (ctx: Context) => {
       for (const chat of chats || []) {
         try {
           ctx.api.deleteMessage(ctx.chat?.id!, chat.message_id);
+
+          messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
         } catch (error) {
           console.log('error delete messages:', error);
         }
