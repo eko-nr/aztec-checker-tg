@@ -160,7 +160,7 @@ export async function startValidatorChecker(bot: Bot) {
           const message = formatEpochValidator(epochValidator, validator.address);
           if(message){
             const keyboard = new InlineKeyboard();
-            keyboard.text("✖ Close All Reports", "ar")
+            keyboard.text("✖ Close All Reports", "close_all_report")
 
             const msg = await bot.api.sendMessage(
               validator.chatId,
