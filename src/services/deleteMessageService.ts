@@ -14,11 +14,11 @@ export const deleteMessage = async (ctx: Context) => {
 
       for (const chat of chats || []) {
         try {
-          ctx.api.deleteMessage(ctx.chat?.id!, chat.message_id);
+          await ctx.api.deleteMessage(ctx.chat?.id!, chat.message_id);
 
-          messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
+          await messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
         } catch (error) {
-          messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
+          await messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
           console.log('error delete messages:', error);
         }
       }
