@@ -71,8 +71,8 @@ class EpochDataManager {
     this.dataDirectory = path.join(process.cwd(), 'json');
     this.databasePath = path.join(this.dataDirectory, 'epoch_db.json');
     this.baseUrl = 'https://dev.dashtec.xyz/api/epochs';
-    this.batchSize = 20;
-    this.delay = 4000;
+    this.batchSize = 50;
+    this.delay = 1000;
 
     this.init()
   }
