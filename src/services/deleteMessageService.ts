@@ -13,10 +13,8 @@ export const deleteMessage = async (ctx: Context) => {
   const cbMsgId = ctx.callbackQuery?.message?.message_id;
   const cbData = ctx.callbackQuery?.data ?? "";
 
-  // A) Always acknowledge the callback (prevents double-taps)
   try { await ctx.answerCallbackQuery(); } catch {}
 
-  // B) Delete the inline-button/callback message ONCE
   if (cbMsgId) {
     try {
       await ctx.deleteMessage();
@@ -31,19 +29,14 @@ export const deleteMessage = async (ctx: Context) => {
 
   if (!chatId) return;
 
-  // C) Branch on exact callback data
   if (cbData === "close") {
-    // Single-close: we’re done after deleting the callback message
     return;
   }
 
   if (cbData !== "close_all_reports") {
-    // Unknown callback; ignore gracefully
     return;
   }
 
-  // D) Multi-close: delete all stored messages for this chat
-  //    (Ideally you only store bot-sent messages or <48h messages.)
   const rows = await messageManager.getChatMessages(chatId);
 
   for (const row of rows ?? []) {
