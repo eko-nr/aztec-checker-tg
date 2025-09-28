@@ -23,6 +23,10 @@ export default async function showValidators(ctx: Context) {
     ctx.reply("⚠️ You don't have any validator");
     return;
   }
+  const wait = ctx.reply("🫣 Just a moment...");
+  setTimeout(async() => {
+    ctx.api.deleteMessage((await wait).chat.id, (await wait).message_id);
+  }, 2500);
 
   // Separate validators that need API calls from those with cached data
   const validatorsWithCache = [];
