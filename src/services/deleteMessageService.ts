@@ -17,10 +17,10 @@ export const deleteMessage = async (ctx: Context) => {
           
           await messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
         } catch (error) {
-          await ctx.deleteMessage();
+          await ctx.deleteMessage().catch();
           
           await messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
-          console.log('error delete messages:', error);
+          console.log('error delete messages: ', ctx.chat?.id!, "id: ", chat.message_id);
         }
       }
     }else{
