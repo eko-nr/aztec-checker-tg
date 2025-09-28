@@ -9,6 +9,7 @@ export const deleteMessage = async (ctx: Context) => {
     const isCloseAll = cbData?.split("_")?.[1] === "all";
 
     if(isCloseAll){
+      await ctx.deleteMessage()
       const chats = await messageManager.getChatMessages(ctx.chat?.id!);
 
       for (const chat of chats || []) {
