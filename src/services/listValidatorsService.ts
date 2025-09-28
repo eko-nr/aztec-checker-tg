@@ -6,6 +6,12 @@ import { fetchEpoch } from "../utils/fetchEpoch";
 const database = new ValidatorDatabase();
 
 export default async function listValidatorsService(ctx: Context, edit = false) {
+
+  const wait = ctx.reply("🫣 Just a moment...");
+  setTimeout(async() => {
+    ctx.api.deleteMessage((await wait).chat.id, (await wait).message_id);
+  }, 3500);
+  
   const validators = await database.getChatValidators(ctx.chatId!);
   const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length);
   const currentEpoch = await fetchEpoch();

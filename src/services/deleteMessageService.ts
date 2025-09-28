@@ -1,8 +1,27 @@
 import { Context } from "grammy";
+import TelegramMessageManager from "../db/telegramMessageManager";
+
+const messageManager = new TelegramMessageManager();
 
 export const deleteMessage = async (ctx: Context) => {
   try {
-    await ctx.deleteMessage()
+    const cbData = ctx.callbackQuery?.data;
+    const isCloseAll = cbData?.split("_")?.[1] === "all";
+
+    if(isCloseAll){
+      const chats = await messageManager.getChatMessages(ctx.chat?.id!);
+
+      for (const chat of chats || []) {
+        try {
+          ctx.api.deleteMessage(ctx.chat?.id!, chat.message_id);
+        } catch (error) {
+          console.log('error delete messages:', error);
+        }
+      }
+    }else{
+      await ctx.deleteMessage()
+    }
+
   } catch (error) {
     
   }

@@ -15,9 +15,9 @@ export const showValidator = async (ctx: Context) => {
     const address = ctx.callbackQuery?.data?.split("_")?.[1];
 
     if(address){
-      const wait = await ctx.reply("🫣 Just a moment...");
-      setTimeout(() => {
-        ctx.api.deleteMessage(wait.chat.id, wait.message_id);
+      const wait = ctx.reply("🫣 Just a moment...");
+      setTimeout(async() => {
+        ctx.api.deleteMessage((await wait).chat.id, (await wait).message_id);
       }, 3500);
 
       const data = await fetchValidatorData(address);

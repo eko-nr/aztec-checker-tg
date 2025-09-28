@@ -7,10 +7,13 @@ import { fetchEpoch } from "../utils/fetchEpoch";
 import { fethEpochValidator } from "../utils/fetchEpochValidator";
 import { formatEpochValidator } from "../utils/formatEpoch";
 import EpochDataManager from "../db/epochManager";
+import TelegramMessageManager from "../db/telegramMessageManager";
 
-export function startValidatorChecker(bot: Bot) {
-  const database = new ValidatorDatabase();
-  const epochManager = new EpochDataManager()
+const database = new ValidatorDatabase();
+const epochManager = new EpochDataManager()
+const messageManager = new TelegramMessageManager();
+
+export async function startValidatorChecker(bot: Bot) {
 
   cron.schedule("*/11 * * * *", async () => {
     console.log("⏰ Running validator status checker at", new Date().toISOString());
@@ -88,12 +91,14 @@ export function startValidatorChecker(bot: Bot) {
             if (hasChanged) {
               
               const keyboard = new InlineKeyboard();
-              keyboard.text("✖ Close", "close")
-
+              keyboard.text("✖ Close All Reports", "close_all_report")
+              
               const msg = await bot.api.sendMessage(validator.chatId, message, {
                 parse_mode: "Markdown",
                 reply_markup: keyboard
               });
+
+              messageManager.addMessage(validator.chatId, msg.message_id, "VALIDATOR_REPORT")
             }
             
           } else if (!success) {
@@ -155,7 +160,7 @@ export function startValidatorChecker(bot: Bot) {
           const message = formatEpochValidator(epochValidator, validator.address);
           if(message){
             const keyboard = new InlineKeyboard();
-            keyboard.text("✖ Close", "close")
+            keyboard.text("✖ Close All Reports", "ar")
 
             const msg = await bot.api.sendMessage(
               validator.chatId,
@@ -165,6 +170,8 @@ export function startValidatorChecker(bot: Bot) {
                 reply_markup: keyboard
               }
             );
+
+             messageManager.addMessage(validator.chatId, msg.message_id, "EPOCH_REPORT")
           }
         }
       }

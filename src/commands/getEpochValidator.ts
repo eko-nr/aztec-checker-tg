@@ -11,6 +11,14 @@ export default async function getEpochValidator(ctx: Context) {
     setTimeout(() => {
       ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!);
     }, 5000);
+    
+    const wait = ctx.reply("🫣 Just a moment...");
+
+    console.log((await wait).chat.id, (await wait).message_id)
+    
+    setTimeout(async() => {
+      ctx.api.deleteMessage((await wait).chat.id, (await wait).message_id);
+    }, 3500);
 
     const validators = await database.getChatValidators(ctx.chatId!);
     const currentEpoch = await fetchEpoch();
