@@ -15,7 +15,7 @@ const messageManager = new TelegramMessageManager();
 
 export async function startValidatorChecker(bot: Bot) {
 
-  cron.schedule("*/11 * * * *", async () => {
+  cron.schedule("*/10 * * * *", async () => {
     console.log("⏰ Running validator status checker at", new Date().toISOString());
     
     try {

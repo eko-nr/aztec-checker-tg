@@ -3,7 +3,7 @@ import cron from "node-cron";
 import EpochDataManager from "../db/epochManager";
 import { fetchEpoch } from "../utils/fetchEpoch";
 
-const totalSavingFutureEpoch = 250;
+const totalSavingFutureEpoch = 500;
 
 export async function startEpochFetcher(bot: Bot) {
   const epochManager = new EpochDataManager();
