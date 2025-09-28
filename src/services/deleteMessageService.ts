@@ -9,15 +9,16 @@ export const deleteMessage = async (ctx: Context) => {
     const isCloseAll = cbData?.split("_")?.[1] === "all";
 
     if(isCloseAll){
-      await ctx.deleteMessage()
       const chats = await messageManager.getChatMessages(ctx.chat?.id!);
-
+      
       for (const chat of chats || []) {
         try {
           await ctx.api.deleteMessage(ctx.chat?.id!, chat.message_id);
-
+          
           await messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
         } catch (error) {
+          await ctx.deleteMessage();
+          
           await messageManager.deleteMessage(ctx.chat?.id!, chat.message_id)
           console.log('error delete messages:', error);
         }
