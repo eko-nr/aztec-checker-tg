@@ -1,4 +1,3 @@
-// handlers/deleteMessage.ts
 import { Context } from "grammy";
 import TelegramMessageManager from "../db/telegramMessageManager";
 
