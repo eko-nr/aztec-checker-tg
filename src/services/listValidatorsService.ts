@@ -129,11 +129,6 @@ export default async function listValidatorsService(ctx: Context, edit = false) 
     if (!edit) {
       await ctx.reply(message, { reply_markup: keyboard });
     } else {
-      const wait = await ctx.reply("🫣 Just a moment...");
-      setTimeout(() => {
-        ctx.api.deleteMessage(wait.chat.id, wait.message_id);
-      }, 800);
-
       await ctx.editMessageText("🎯 Here is your validators:", { reply_markup: keyboard });
     }
 
