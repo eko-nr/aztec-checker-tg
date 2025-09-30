@@ -13,7 +13,7 @@ export default async function listValidatorsService(ctx: Context, edit = false) 
   }, 1500);
   
   const validators = await database.getChatValidators(ctx.chatId!);
-  const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length);
+  const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length+100);
   const currentEpoch = await fetchEpoch();
   
   const pagination = ctx.callbackQuery?.data?.split("_page_");
