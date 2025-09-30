@@ -148,9 +148,25 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, e
     }
   }
 
-  const recentAttestationStatus = data.currentData.recentAttestations
+  const lastAttestations = data.currentData.recentAttestations
     .slice(0, 5)
-    .map(att => `Slot ${att.slot}: ${att.status === "Success" ? "✅" : "❌"}`)
+    .map(att => `\`Epoch ${att.epoch} - Slot ${att.slot}: ${att.status === "Success" ? "Sent ✅" : "Missed ❌"}\``)
+    .join("\n");
+
+  const lastProposals = data.currentData.proposalHistory
+    .slice(0, 5)
+    .map(
+      prop => `\`Epoch ${prop.epoch} - Slot ${prop.slot}: ${
+        prop.status.includes("miss") ?
+          "Missed ❌" 
+            :
+          prop.status.includes("proposed") ?
+            "Proposed ✅" 
+              :
+            "Mined ✅"
+        
+      }\``
+    )
     .join("\n");
 
   // Find upcoming epochs (up to 5)
@@ -209,8 +225,11 @@ ${statusEmoji} **Status:** \`${statusDisplay}\`
 • Blocks Proposal or Mined: \`${totalBlockProposalMsg.success} ✅ / ${totalBlockProposalMsg.failed} ❌\`
 • Participating Epochs: \`${totalParticipatingEpochs}\`
 
-🕒 **Recent Attestations:**
-${recentAttestationStatus}
+🕒 **Last Attestations:**
+${lastAttestations}
+
+🕒 **Last Proposals:**
+${lastProposals}
 
 📅 **Upcoming Epochs:**
 ${upcomingEpochsInfo}
