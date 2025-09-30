@@ -34,16 +34,20 @@ export default async function showValidators(ctx: Context) {
   const validatorsNeedingFetch = [];
 
   for (const validator of validators) {
-    const latestLogs = await database.getLatestLog(validator.address);
+    try {
+      const latestLogs = await database.getLatestLog(validator.address);
     
-    if (latestLogs?.data) {
-      validatorsWithCache.push({
-        validator,
-        cachedData: latestLogs.data,
-        timestamp: latestLogs.timestamp
-      });
-    } else {
-      validatorsNeedingFetch.push(validator);
+      if (latestLogs?.data) {
+        validatorsWithCache.push({
+          validator,
+          cachedData: latestLogs.data,
+          timestamp: latestLogs.timestamp
+        });
+      } else {
+        validatorsNeedingFetch.push(validator);
+      }
+    } catch (error) {
+      console.log('error showValidators cache:', error);
     }
   }
 
