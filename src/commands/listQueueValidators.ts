@@ -6,11 +6,11 @@ const database = new ValidatorDatabase();
 
 export default async function listQueueValidators(ctx: Context) {
   try {
-    await listQueueValidatorsService(ctx)
-
     setTimeout(() => {
       ctx.api.deleteMessage(ctx.chat?.id!, ctx.message?.message_id!);
     }, 5000);
+
+    await listQueueValidatorsService(ctx)
   } catch (error) {
     ctx.reply("❌ Failed to get epoch, try again later")
   }
