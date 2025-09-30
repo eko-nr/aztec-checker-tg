@@ -198,6 +198,10 @@ ${statusEmoji} **Status:** \`${statusDisplay}\`
 🎁 **Unclaimed Rewards:** \`${unclaimedRewardMsg} STK\`
 🕓 **Activation Date:** \`${moment(data.currentData.activationDate).toLocaleString()}\`
 
+🤝 **Socmeds:**
+• **Discord:** \`${!data.currentData.discordUsername ? "N/A" : `@${data.currentData.discordUsername}`}\`
+• **X/Twitter:** \`${!data.currentData.x_handle ? "N/A" : `@${data.currentData.x_handle}`}\`
+
 📈 **Performance:**
 • Last Attestation: \`${lastEpochAttestation.epoch > 0 ? epochTimePassed(epoch.currentEpoch, lastEpochAttestation.epoch) : "N/A"}\`
 • Last Proposal: \`${lastEpochBlock.epoch > 0 ? epochTimePassed(epoch.currentEpoch, lastEpochBlock.epoch) : "N/A"}\`
