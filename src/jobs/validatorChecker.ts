@@ -61,21 +61,25 @@ export async function startValidatorChecker(bot: Bot) {
       // Process results sequentially for database operations and messaging
       for (const result of results) {
         const { validator, data, success, error } = result;
-        if(data?.status === "inactive_on_contract"){
-          continue
-        }
-        
         try {
           if (success && data) {
             // Get the latest log to compare data
             const latestLog = await database.getLatestLog(validator.address);
             const hasChanged = await database.hasDataChanged(latestLog?.data || null, data, false);
+            const prevValidator = await database.getValidatorData(validator.address);
 
-            const validatorData = await database.getValidatorData(validator.address);
+            if(data?.status === "inactive_on_contract"){
+              continue;
+            }
+
+            if(Number(data.balance) > 0 && Number(data.unclaimedRewards) - Number(prevValidator?.unclaimedRewards ?? 0) < 0){
+              continue;
+            }
+
             const message = formatValidatorMessage(
               {
                 currentData: data,
-                previousData: validatorData
+                previousData: prevValidator
               },
               new Date().toISOString(),
               {
@@ -84,7 +88,7 @@ export async function startValidatorChecker(bot: Bot) {
               },
             );
             
-            // Always save to database
+            // Save logs to database
             await database.addLog(validator.address, validator.chatId, data);
             
             // Only send message if data has changed
