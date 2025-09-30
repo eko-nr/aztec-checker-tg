@@ -4,6 +4,11 @@ import { formatEpoch } from "../utils/formatEpoch";
 
 export default async function showEpochService(ctx: Context, edit = false) {
   try {
+    const wait = await ctx.reply("🫣 Just a moment...");
+    setTimeout(() => {
+      ctx.api.deleteMessage(wait.chat.id, wait.message_id);
+    }, 1200);
+
     const data = await fetchEpoch();
     const keyboard = new InlineKeyboard();
 
@@ -19,10 +24,6 @@ export default async function showEpochService(ctx: Context, edit = false) {
           reply_markup: keyboard
         })
       }else{
-        const wait = await ctx.reply("🫣 Just a moment...");
-        setTimeout(() => {
-          ctx.api.deleteMessage(wait.chat.id, wait.message_id);
-        }, 800);
 
         ctx.editMessageText(message, {
           parse_mode: "Markdown",

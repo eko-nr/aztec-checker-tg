@@ -1,23 +1,46 @@
 import { Context, InlineKeyboard } from "grammy";
 import { ValidatorDatabase } from "../db/validatorDB";
+import { fetchQueue } from "../utils/fetchQueue";
 
 const database = new ValidatorDatabase();
 
 export default async function listQueueValidatorsService(ctx: Context, edit = false) {
-  const validators = await database.getChatValidators(ctx.chatId!);
-  const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length);
-  const pagination = ctx.callbackQuery?.data?.split("_page_");
-  const startFrom = Number(pagination?.[1]) || 0 as number;
-  const dataPerPage = 15;
-  
+
   try {
+    const wait = ctx.reply("🫣 Just a moment...");
+    setTimeout(async() => {
+      ctx.api.deleteMessage((await wait).chat.id, (await wait).message_id);
+    }, 2500);
+
+    const validators = await database.getChatValidators(ctx.chatId!);
+    const recentLogs = await database.getLatestLogsByChat(ctx.chatId!, validators.length);
+    const pagination = ctx.callbackQuery?.data?.split("_page_");
+    const startFrom = Number(pagination?.[1]) || 0 as number;
+    const dataPerPage = 15;
+
     const keyboard = new InlineKeyboard()
 
     let count = 0;
     const queueValidators = validators.filter(x => !recentLogs.find(y => x.address.toLowerCase() === y.address.toLowerCase()));
+    const fetchAllQueuesAddress = queueValidators.map(async(x)=> {
+      try {
+        const dataQueue = await fetchQueue(x.address);
 
-    for (const key in queueValidators) {
-      const address = queueValidators[key].address;
+        if((dataQueue?.validatorsInQueue.length ?? 0) > 0){
+          return x.address
+        }else{
+          return null
+        }
+      } catch (error) {
+        return null
+      }
+    });
+
+    const addressQueue = (await Promise.all(fetchAllQueuesAddress))
+      .filter(Boolean) as string[];
+
+    for (const key in addressQueue) {
+      const address = addressQueue[key];
       const cleanAddress = `${address.substring(0, 5)}...${address.substring(address.length - 5, address.length)}`;
 
       if(!pagination && Number(key)+1 <= dataPerPage){
