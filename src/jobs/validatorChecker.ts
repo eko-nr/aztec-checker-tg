@@ -72,7 +72,7 @@ export async function startValidatorChecker(bot: Bot) {
               continue;
             }
 
-            if(Number(data.balance) > 0 && Number(data.unclaimedRewards) - Number(prevValidator?.unclaimedRewards ?? 0) < 0){
+            if(Number(data.balance) > 0 && (Number(data.unclaimedRewards) - Number(prevValidator?.unclaimedRewards ?? 0)) < 0){
               continue;
             }
 
