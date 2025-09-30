@@ -71,7 +71,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, e
   const currentBlockProposalSuccess = data.currentData.totalBlocksMined + data.currentData.totalBlocksProposed;
   const currentBlockProposalFailed = data.currentData.totalBlocksMissed;
   const currentTotalBlock = currentBlockProposalSuccess + currentBlockProposalFailed;
-  const currentBlockProsalPercent = (currentBlockProposalSuccess/currentTotalBlock*100).toFixed(2)
+  const currentBlockProposalPercent = (currentBlockProposalSuccess/currentTotalBlock*100).toFixed(2)
 
   const currentUnclaimedRewardsInSTK = (parseFloat(data.currentData.unclaimedRewards) / 1e18).toFixed(6);
   const currentBalanceInSTK = (parseFloat(data.currentData.balance) / 1e18).toFixed(4);
@@ -116,12 +116,12 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, e
     const prevBlockProposalSuccess = data.previousData.totalBlocksMined + data.previousData.totalBlocksProposed;
     const prevBlockProposalFailed = data.previousData.totalBlocksMissed;
     const prevTotalBlock = prevBlockProposalSuccess + prevBlockProposalFailed;
-    const prevBlockProsalPercent = (prevBlockProposalSuccess/prevTotalBlock*100).toFixed(2)
+    const prevBlockProposalPercent = (prevBlockProposalSuccess/prevTotalBlock*100).toFixed(2)
 
     rankValidatorMsg = `From ${data.previousData.rank} => ${data.currentData.rank} (${symbolDirection(data.currentData.rank - data.previousData.rank)})`
     balanceStkMsg = `From ${prevBalanceInStk} => ${currentBalanceInSTK} (${symbolDirection(Number(currentBalanceInSTK) - Number(prevBalanceInStk))})`;
     attestionRateMsg = `From ${data.previousData.attestationSuccess} => ${data.currentData.attestationSuccess}`;
-    blockProposalORateMsg = `From ${prevBlockProsalPercent || "0"}% => ${currentBlockProsalPercent || "0"}%`;
+    blockProposalORateMsg = `From ${ prevTotalBlock ? prevBlockProposalPercent : "0"}% => ${currentTotalBlock ? currentBlockProposalPercent : "0"}%`;
     unclaimedRewardMsg = `From ${prevUnclaimedRewardsInSTK} => ${currentUnclaimedRewardsInSTK} (${symbolDirection(Number(currentUnclaimedRewardsInSTK) - Number(prevUnclaimedRewardsInSTK))})`;
     totalAttestationMsg = {
       success: `${data.previousData.totalAttestationsSucceeded} => ${data.currentData.totalAttestationsSucceeded} (${symbolDirection(data.currentData.totalAttestationsSucceeded - data.previousData.totalAttestationsSucceeded)})`,
@@ -136,7 +136,7 @@ export function formatValidatorMessage(data: DataValidator, timestamp: string, e
     rankValidatorMsg = data.currentData.rank.toString();
     balanceStkMsg = currentBalanceInSTK;
     attestionRateMsg = data.currentData.attestationSuccess;
-    blockProposalORateMsg = currentTotalBlock === 0 ? "0" : currentBlockProsalPercent;
+    blockProposalORateMsg = currentTotalBlock === 0 ? "0" : currentBlockProposalPercent;
     unclaimedRewardMsg = currentUnclaimedRewardsInSTK;
     totalAttestationMsg = {
       success: data.currentData.totalAttestationsSucceeded.toString(),
@@ -206,7 +206,7 @@ ${statusEmoji} **Status:** \`${statusDisplay}\`
 • Last Attestation: \`${lastEpochAttestation.epoch > 0 ? epochTimePassed(epoch.currentEpoch, lastEpochAttestation.epoch) : "N/A"}\`
 • Last Proposal: \`${lastEpochBlock.epoch > 0 ? epochTimePassed(epoch.currentEpoch, lastEpochBlock.epoch) : "N/A"}\`
 • Total Attestations: \`${totalAttestationMsg.success} ✅ / ${totalAttestationMsg.missed} ❌\`
-• Blocks Prosal or Mined: \`${totalBlockProposalMsg.success} ✅ / ${totalBlockProposalMsg.failed} ❌\`
+• Blocks Proposal or Mined: \`${totalBlockProposalMsg.success} ✅ / ${totalBlockProposalMsg.failed} ❌\`
 • Participating Epochs: \`${totalParticipatingEpochs}\`
 
 🕒 **Recent Attestations:**
